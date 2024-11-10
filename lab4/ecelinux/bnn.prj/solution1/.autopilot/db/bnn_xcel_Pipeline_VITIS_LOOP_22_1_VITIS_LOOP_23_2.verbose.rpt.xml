@@ -1,0 +1,584 @@
+<profile>
+
+<section name = "Vitis HLS Report for 'bnn_xcel_Pipeline_VITIS_LOOP_22_1_VITIS_LOOP_23_2'" level="0">
+<item name = "Date">Sun Nov 10 15:48:13 2024
+</item>
+<item name = "Version">2022.1.2 (Build 3605665 on Fri Aug  5 22:52:02 MDT 2022)</item>
+<item name = "Project">bnn.prj</item>
+<item name = "Solution">solution1 (Vivado IP Flow Target)</item>
+<item name = "Product family">virtexuplus</item>
+<item name = "Target device">xcu280-fsvh2892-2L-e</item>
+</section>
+
+<section name = "Performance Estimates" level="0">
+<item name = "Timing">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="4">Clock, Target, Estimated, Uncertainty</keys>
+<column name="ap_clk">10.00 ns, 2.250 ns, 2.70 ns</column>
+</table>
+</item>
+</section>
+</item>
+<item name = "Latency">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="8">, min, max, min, max, min, max, Type</keys>
+<column name="">1026, 1026, 10.260 us, 10.260 us, 1026, 1026, no</column>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="0">
+<keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
+</table>
+</item>
+<item name = "Loop"><table name="" hasTotal="0">
+<keys size="8">Loop Name, min, max, Latency, achieved, target, Count, Pipelined</keys>
+<column name="- VITIS_LOOP_22_1_VITIS_LOOP_23_2">1024, 1024, 8, 8, 1, 128, yes</column>
+</table>
+</item>
+</section>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Utilization Estimates" level="0">
+<item name = "Summary"><table name="" hasTotal="1">
+<keys size="6">Name, BRAM_18K, DSP, FF, LUT, URAM</keys>
+<column name="DSP">-, -, -, -, -</column>
+<column name="Expression">-, -, 0, 82, -</column>
+<column name="FIFO">-, -, -, -, -</column>
+<column name="Instance">-, -, -, -, -</column>
+<column name="Memory">-, -, -, -, -</column>
+<column name="Multiplexer">-, -, -, 1936, -</column>
+<column name="Register">-, -, 1980, -, -</column>
+<specialColumn name="Available SLR">1344, 3008, 869120, 434560, 320</specialColumn>
+<specialColumn name="Utilization SLR (%)">0, 0, ~0, ~0, 0</specialColumn>
+<specialColumn name="Available">4032, 9024, 2607360, 1303680, 960</specialColumn>
+<specialColumn name="Utilization (%)">0, 0, ~0, ~0, 0</specialColumn>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="1">
+<keys size="7">Instance, Module, BRAM_18K, DSP, FF, LUT, URAM</keys>
+</table>
+</item>
+<item name = "DSP"><table name="" hasTotal="0">
+<keys size="3">Instance, Module, Expression</keys>
+</table>
+</item>
+<item name = "Memory"><table name="" hasTotal="1">
+<keys size="10">Memory, Module, BRAM_18K, FF, LUT, URAM, Words, Bits, Banks, W*Bits*Banks</keys>
+</table>
+</item>
+<item name = "FIFO"><table name="" hasTotal="1">
+<keys size="8">Name, BRAM_18K, FF, LUT, URAM, Depth, Bits, Size:D*B</keys>
+</table>
+</item>
+<item name = "Expression"><table name="" hasTotal="1">
+<keys size="7">Variable Name, Operation, DSP, FF, LUT, Bitwidth P0, Bitwidth P1</keys>
+<column name="add_ln22_1_fu_1472_p2">+, 0, 0, 15, 8, 1</column>
+<column name="add_ln22_fu_1484_p2">+, 0, 0, 12, 5, 1</column>
+<column name="empty_37_fu_1528_p2">+, 0, 0, 14, 7, 7</column>
+<column name="indvars_iv_next103_fu_1546_p2">+, 0, 0, 12, 4, 1</column>
+<column name="icmp_ln22_fu_1466_p2">icmp, 0, 0, 11, 8, 9</column>
+<column name="icmp_ln23_fu_1490_p2">icmp, 0, 0, 9, 4, 5</column>
+<column name="select_ln22_1_fu_1504_p3">select, 0, 0, 5, 1, 5</column>
+<column name="select_ln22_fu_1496_p3">select, 0, 0, 4, 1, 1</column>
+</table>
+</item>
+<item name = "Multiplexer"><table name="" hasTotal="1">
+<keys size="5">Name, LUT, Input Size, Bits, Total Bits</keys>
+<column name="ap_NS_fsm">49, 9, 1, 9</column>
+<column name="ap_done_int">9, 2, 1, 2</column>
+<column name="ap_sig_allocacmp_indvar_flatten6_load">9, 2, 8, 16</column>
+<column name="ap_sig_allocacmp_m_load">9, 2, 5, 10</column>
+<column name="ap_sig_allocacmp_x_load">9, 2, 4, 8</column>
+<column name="conv1_pooled_padded_10_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_10_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_10_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_10_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_11_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_11_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_11_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_11_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_12_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_12_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_12_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_12_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_13_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_13_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_13_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_13_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_14_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_14_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_14_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_14_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_15_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_15_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_15_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_15_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_1_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_1_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_1_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_1_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_2_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_2_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_2_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_2_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_3_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_3_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_3_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_3_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_4_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_4_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_4_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_4_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_5_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_5_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_5_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_5_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_6_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_6_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_6_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_6_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_7_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_7_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_7_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_7_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_8_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_8_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_8_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_8_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_9_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_9_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_9_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_9_d1">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_address0">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_address1">31, 6, 4, 24</column>
+<column name="conv1_pooled_padded_d0">26, 5, 10, 50</column>
+<column name="conv1_pooled_padded_d1">26, 5, 10, 50</column>
+<column name="indvar_flatten6_fu_140">9, 2, 8, 16</column>
+<column name="m_fu_136">9, 2, 5, 10</column>
+<column name="x_fu_132">9, 2, 4, 8</column>
+</table>
+</item>
+<item name = "Register"><table name="" hasTotal="1">
+<keys size="5">Name, FF, LUT, Bits, Const Bits</keys>
+<column name="add_ln22_1_reg_3320">8, 0, 8, 0</column>
+<column name="ap_CS_fsm">8, 0, 8, 0</column>
+<column name="ap_done_reg">1, 0, 1, 0</column>
+<column name="conv1_pooled_0_load_reg_3379">1, 0, 1, 0</column>
+<column name="conv1_pooled_1_load_reg_3399">1, 0, 1, 0</column>
+<column name="conv1_pooled_2_load_reg_3419">1, 0, 1, 0</column>
+<column name="conv1_pooled_3_load_reg_3439">1, 0, 1, 0</column>
+<column name="conv1_pooled_4_load_reg_3459">1, 0, 1, 0</column>
+<column name="conv1_pooled_5_load_reg_3479">1, 0, 1, 0</column>
+<column name="conv1_pooled_6_load_reg_3499">1, 0, 1, 0</column>
+<column name="conv1_pooled_7_load_reg_3519">1, 0, 1, 0</column>
+<column name="conv1_pooled_padded_10_load_1_reg_3639">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_10_load_2_reg_3719">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_10_load_3_reg_3799">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_10_load_4_reg_3879">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_10_load_5_reg_3959">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_10_load_reg_3559">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_11_load_1_reg_3634">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_11_load_2_reg_3714">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_11_load_3_reg_3794">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_11_load_4_reg_3874">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_11_load_5_reg_3954">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_11_load_reg_3554">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_12_load_1_reg_3629">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_12_load_2_reg_3709">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_12_load_3_reg_3789">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_12_load_4_reg_3869">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_12_load_5_reg_3949">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_12_load_reg_3549">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_13_load_1_reg_3624">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_13_load_2_reg_3704">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_13_load_3_reg_3784">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_13_load_4_reg_3864">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_13_load_5_reg_3944">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_13_load_reg_3544">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_14_load_1_reg_3619">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_14_load_2_reg_3699">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_14_load_3_reg_3779">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_14_load_4_reg_3859">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_14_load_5_reg_3939">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_14_load_reg_3539">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_15_load_1_reg_3694">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_15_load_2_reg_3774">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_15_load_3_reg_3854">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_15_load_4_reg_3934">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_15_load_5_reg_4014">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_15_load_reg_3614">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_1_load_1_reg_3684">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_1_load_2_reg_3764">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_1_load_3_reg_3844">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_1_load_4_reg_3924">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_1_load_5_reg_4004">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_1_load_reg_3604">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_2_load_1_reg_3679">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_2_load_2_reg_3759">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_2_load_3_reg_3839">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_2_load_4_reg_3919">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_2_load_5_reg_3999">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_2_load_reg_3599">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_3_load_1_reg_3674">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_3_load_2_reg_3754">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_3_load_3_reg_3834">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_3_load_4_reg_3914">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_3_load_5_reg_3994">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_3_load_reg_3594">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_4_load_1_reg_3669">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_4_load_2_reg_3749">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_4_load_3_reg_3829">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_4_load_4_reg_3909">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_4_load_5_reg_3989">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_4_load_reg_3589">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_5_load_1_reg_3664">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_5_load_2_reg_3744">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_5_load_3_reg_3824">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_5_load_4_reg_3904">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_5_load_5_reg_3984">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_5_load_reg_3584">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_6_load_1_reg_3659">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_6_load_2_reg_3739">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_6_load_3_reg_3819">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_6_load_4_reg_3899">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_6_load_5_reg_3979">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_6_load_reg_3579">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_7_load_1_reg_3654">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_7_load_2_reg_3734">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_7_load_3_reg_3814">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_7_load_4_reg_3894">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_7_load_5_reg_3974">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_7_load_reg_3574">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_8_load_1_reg_3649">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_8_load_2_reg_3729">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_8_load_3_reg_3809">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_8_load_4_reg_3889">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_8_load_5_reg_3969">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_8_load_reg_3569">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_9_load_1_reg_3644">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_9_load_2_reg_3724">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_9_load_3_reg_3804">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_9_load_4_reg_3884">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_9_load_5_reg_3964">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_9_load_reg_3564">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_load_1_reg_3689">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_load_2_reg_3769">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_load_3_reg_3849">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_load_4_reg_3929">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_load_5_reg_4009">10, 0, 10, 0</column>
+<column name="conv1_pooled_padded_load_reg_3609">10, 0, 10, 0</column>
+<column name="empty_36_reg_3335">4, 0, 4, 0</column>
+<column name="icmp_ln22_reg_3316">1, 0, 1, 0</column>
+<column name="indvar_flatten6_fu_140">8, 0, 8, 0</column>
+<column name="indvars_iv_next103_reg_4019">4, 0, 4, 0</column>
+<column name="m_fu_136">5, 0, 5, 0</column>
+<column name="select_ln22_1_reg_3330">5, 0, 5, 0</column>
+<column name="select_ln22_reg_3325">4, 0, 4, 0</column>
+<column name="tmp_2064_reg_4099">10, 0, 10, 0</column>
+<column name="tmp_2065_reg_4094">10, 0, 10, 0</column>
+<column name="tmp_2066_reg_4089">10, 0, 10, 0</column>
+<column name="tmp_2067_reg_4084">10, 0, 10, 0</column>
+<column name="tmp_2068_reg_4079">10, 0, 10, 0</column>
+<column name="tmp_2069_reg_4074">10, 0, 10, 0</column>
+<column name="tmp_2070_reg_4069">10, 0, 10, 0</column>
+<column name="tmp_2071_reg_4064">10, 0, 10, 0</column>
+<column name="tmp_2072_reg_4059">10, 0, 10, 0</column>
+<column name="tmp_2073_reg_4054">10, 0, 10, 0</column>
+<column name="tmp_2074_reg_4049">10, 0, 10, 0</column>
+<column name="tmp_2075_reg_4044">10, 0, 10, 0</column>
+<column name="tmp_2076_reg_4039">10, 0, 10, 0</column>
+<column name="tmp_2077_reg_4034">10, 0, 10, 0</column>
+<column name="tmp_2078_reg_4029">10, 0, 10, 0</column>
+<column name="tmp_2079_reg_4024">10, 0, 10, 0</column>
+<column name="tmp_2080_reg_4179">10, 0, 10, 0</column>
+<column name="tmp_2081_reg_4174">10, 0, 10, 0</column>
+<column name="tmp_2082_reg_4169">10, 0, 10, 0</column>
+<column name="tmp_2083_reg_4164">10, 0, 10, 0</column>
+<column name="tmp_2084_reg_4159">10, 0, 10, 0</column>
+<column name="tmp_2085_reg_4154">10, 0, 10, 0</column>
+<column name="tmp_2086_reg_4149">10, 0, 10, 0</column>
+<column name="tmp_2087_reg_4144">10, 0, 10, 0</column>
+<column name="tmp_2088_reg_4139">10, 0, 10, 0</column>
+<column name="tmp_2089_reg_4134">10, 0, 10, 0</column>
+<column name="tmp_2090_reg_4129">10, 0, 10, 0</column>
+<column name="tmp_2091_reg_4124">10, 0, 10, 0</column>
+<column name="tmp_2092_reg_4119">10, 0, 10, 0</column>
+<column name="tmp_2093_reg_4114">10, 0, 10, 0</column>
+<column name="tmp_2094_reg_4109">10, 0, 10, 0</column>
+<column name="tmp_2095_reg_4104">10, 0, 10, 0</column>
+<column name="tmp_2096_reg_4259">10, 0, 10, 0</column>
+<column name="tmp_2097_reg_4254">10, 0, 10, 0</column>
+<column name="tmp_2098_reg_4249">10, 0, 10, 0</column>
+<column name="tmp_2099_reg_4244">10, 0, 10, 0</column>
+<column name="tmp_2100_reg_4239">10, 0, 10, 0</column>
+<column name="tmp_2101_reg_4234">10, 0, 10, 0</column>
+<column name="tmp_2102_reg_4229">10, 0, 10, 0</column>
+<column name="tmp_2103_reg_4224">10, 0, 10, 0</column>
+<column name="tmp_2104_reg_4219">10, 0, 10, 0</column>
+<column name="tmp_2105_reg_4214">10, 0, 10, 0</column>
+<column name="tmp_2106_reg_4209">10, 0, 10, 0</column>
+<column name="tmp_2107_reg_4204">10, 0, 10, 0</column>
+<column name="tmp_2108_reg_4199">10, 0, 10, 0</column>
+<column name="tmp_2109_reg_4194">10, 0, 10, 0</column>
+<column name="tmp_2110_reg_4189">10, 0, 10, 0</column>
+<column name="tmp_2111_reg_4184">10, 0, 10, 0</column>
+<column name="tmp_2112_reg_4339">10, 0, 10, 0</column>
+<column name="tmp_2113_reg_4334">10, 0, 10, 0</column>
+<column name="tmp_2114_reg_4329">10, 0, 10, 0</column>
+<column name="tmp_2115_reg_4324">10, 0, 10, 0</column>
+<column name="tmp_2116_reg_4319">10, 0, 10, 0</column>
+<column name="tmp_2117_reg_4314">10, 0, 10, 0</column>
+<column name="tmp_2118_reg_4309">10, 0, 10, 0</column>
+<column name="tmp_2119_reg_4304">10, 0, 10, 0</column>
+<column name="tmp_2120_reg_4299">10, 0, 10, 0</column>
+<column name="tmp_2121_reg_4294">10, 0, 10, 0</column>
+<column name="tmp_2122_reg_4289">10, 0, 10, 0</column>
+<column name="tmp_2123_reg_4284">10, 0, 10, 0</column>
+<column name="tmp_2124_reg_4279">10, 0, 10, 0</column>
+<column name="tmp_2125_reg_4274">10, 0, 10, 0</column>
+<column name="tmp_2126_reg_4269">10, 0, 10, 0</column>
+<column name="tmp_2127_reg_4264">10, 0, 10, 0</column>
+<column name="tmp_2128_reg_4419">10, 0, 10, 0</column>
+<column name="tmp_2129_reg_4414">10, 0, 10, 0</column>
+<column name="tmp_2130_reg_4409">10, 0, 10, 0</column>
+<column name="tmp_2131_reg_4404">10, 0, 10, 0</column>
+<column name="tmp_2132_reg_4399">10, 0, 10, 0</column>
+<column name="tmp_2133_reg_4394">10, 0, 10, 0</column>
+<column name="tmp_2134_reg_4389">10, 0, 10, 0</column>
+<column name="tmp_2135_reg_4384">10, 0, 10, 0</column>
+<column name="tmp_2136_reg_4379">10, 0, 10, 0</column>
+<column name="tmp_2137_reg_4374">10, 0, 10, 0</column>
+<column name="tmp_2138_reg_4369">10, 0, 10, 0</column>
+<column name="tmp_2139_reg_4364">10, 0, 10, 0</column>
+<column name="tmp_2140_reg_4359">10, 0, 10, 0</column>
+<column name="tmp_2141_reg_4354">10, 0, 10, 0</column>
+<column name="tmp_2142_reg_4349">10, 0, 10, 0</column>
+<column name="tmp_2143_reg_4344">10, 0, 10, 0</column>
+<column name="tmp_2144_reg_4499">10, 0, 10, 0</column>
+<column name="tmp_2145_reg_4494">10, 0, 10, 0</column>
+<column name="tmp_2146_reg_4489">10, 0, 10, 0</column>
+<column name="tmp_2147_reg_4484">10, 0, 10, 0</column>
+<column name="tmp_2148_reg_4479">10, 0, 10, 0</column>
+<column name="tmp_2149_reg_4474">10, 0, 10, 0</column>
+<column name="tmp_2150_reg_4469">10, 0, 10, 0</column>
+<column name="tmp_2151_reg_4464">10, 0, 10, 0</column>
+<column name="tmp_2152_reg_4459">10, 0, 10, 0</column>
+<column name="tmp_2153_reg_4454">10, 0, 10, 0</column>
+<column name="tmp_2154_reg_4449">10, 0, 10, 0</column>
+<column name="tmp_2155_reg_4444">10, 0, 10, 0</column>
+<column name="tmp_2156_reg_4439">10, 0, 10, 0</column>
+<column name="tmp_2157_reg_4434">10, 0, 10, 0</column>
+<column name="tmp_2158_reg_4429">10, 0, 10, 0</column>
+<column name="tmp_2159_reg_4424">10, 0, 10, 0</column>
+<column name="x_fu_132">4, 0, 4, 0</column>
+</table>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Interface" level="0">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="6">RTL Ports, Dir, Bits, Protocol, Source Object, C Type</keys>
+<column name="ap_clk">in, 1, ap_ctrl_hs, bnn_xcel_Pipeline_VITIS_LOOP_22_1_VITIS_LOOP_23_2, return value</column>
+<column name="ap_rst">in, 1, ap_ctrl_hs, bnn_xcel_Pipeline_VITIS_LOOP_22_1_VITIS_LOOP_23_2, return value</column>
+<column name="ap_start">in, 1, ap_ctrl_hs, bnn_xcel_Pipeline_VITIS_LOOP_22_1_VITIS_LOOP_23_2, return value</column>
+<column name="ap_done">out, 1, ap_ctrl_hs, bnn_xcel_Pipeline_VITIS_LOOP_22_1_VITIS_LOOP_23_2, return value</column>
+<column name="ap_idle">out, 1, ap_ctrl_hs, bnn_xcel_Pipeline_VITIS_LOOP_22_1_VITIS_LOOP_23_2, return value</column>
+<column name="ap_ready">out, 1, ap_ctrl_hs, bnn_xcel_Pipeline_VITIS_LOOP_22_1_VITIS_LOOP_23_2, return value</column>
+<column name="conv1_pooled_padded_15_address0">out, 4, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_ce0">out, 1, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_we0">out, 1, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_d0">out, 10, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_q0">in, 10, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_address1">out, 4, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_ce1">out, 1, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_we1">out, 1, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_d1">out, 10, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_15_q1">in, 10, ap_memory, conv1_pooled_padded_15, array</column>
+<column name="conv1_pooled_padded_14_address0">out, 4, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_ce0">out, 1, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_we0">out, 1, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_d0">out, 10, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_q0">in, 10, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_address1">out, 4, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_ce1">out, 1, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_we1">out, 1, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_d1">out, 10, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_14_q1">in, 10, ap_memory, conv1_pooled_padded_14, array</column>
+<column name="conv1_pooled_padded_13_address0">out, 4, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_ce0">out, 1, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_we0">out, 1, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_d0">out, 10, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_q0">in, 10, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_address1">out, 4, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_ce1">out, 1, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_we1">out, 1, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_d1">out, 10, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_13_q1">in, 10, ap_memory, conv1_pooled_padded_13, array</column>
+<column name="conv1_pooled_padded_12_address0">out, 4, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_ce0">out, 1, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_we0">out, 1, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_d0">out, 10, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_q0">in, 10, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_address1">out, 4, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_ce1">out, 1, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_we1">out, 1, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_d1">out, 10, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_12_q1">in, 10, ap_memory, conv1_pooled_padded_12, array</column>
+<column name="conv1_pooled_padded_11_address0">out, 4, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_ce0">out, 1, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_we0">out, 1, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_d0">out, 10, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_q0">in, 10, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_address1">out, 4, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_ce1">out, 1, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_we1">out, 1, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_d1">out, 10, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_11_q1">in, 10, ap_memory, conv1_pooled_padded_11, array</column>
+<column name="conv1_pooled_padded_10_address0">out, 4, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_ce0">out, 1, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_we0">out, 1, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_d0">out, 10, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_q0">in, 10, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_address1">out, 4, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_ce1">out, 1, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_we1">out, 1, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_d1">out, 10, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_10_q1">in, 10, ap_memory, conv1_pooled_padded_10, array</column>
+<column name="conv1_pooled_padded_9_address0">out, 4, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_ce0">out, 1, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_we0">out, 1, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_d0">out, 10, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_q0">in, 10, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_address1">out, 4, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_ce1">out, 1, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_we1">out, 1, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_d1">out, 10, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_9_q1">in, 10, ap_memory, conv1_pooled_padded_9, array</column>
+<column name="conv1_pooled_padded_8_address0">out, 4, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_ce0">out, 1, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_we0">out, 1, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_d0">out, 10, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_q0">in, 10, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_address1">out, 4, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_ce1">out, 1, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_we1">out, 1, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_d1">out, 10, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_8_q1">in, 10, ap_memory, conv1_pooled_padded_8, array</column>
+<column name="conv1_pooled_padded_7_address0">out, 4, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_ce0">out, 1, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_we0">out, 1, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_d0">out, 10, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_q0">in, 10, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_address1">out, 4, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_ce1">out, 1, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_we1">out, 1, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_d1">out, 10, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_7_q1">in, 10, ap_memory, conv1_pooled_padded_7, array</column>
+<column name="conv1_pooled_padded_6_address0">out, 4, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_ce0">out, 1, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_we0">out, 1, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_d0">out, 10, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_q0">in, 10, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_address1">out, 4, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_ce1">out, 1, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_we1">out, 1, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_d1">out, 10, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_6_q1">in, 10, ap_memory, conv1_pooled_padded_6, array</column>
+<column name="conv1_pooled_padded_5_address0">out, 4, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_ce0">out, 1, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_we0">out, 1, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_d0">out, 10, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_q0">in, 10, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_address1">out, 4, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_ce1">out, 1, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_we1">out, 1, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_d1">out, 10, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_5_q1">in, 10, ap_memory, conv1_pooled_padded_5, array</column>
+<column name="conv1_pooled_padded_4_address0">out, 4, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_ce0">out, 1, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_we0">out, 1, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_d0">out, 10, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_q0">in, 10, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_address1">out, 4, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_ce1">out, 1, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_we1">out, 1, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_d1">out, 10, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_4_q1">in, 10, ap_memory, conv1_pooled_padded_4, array</column>
+<column name="conv1_pooled_padded_3_address0">out, 4, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_ce0">out, 1, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_we0">out, 1, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_d0">out, 10, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_q0">in, 10, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_address1">out, 4, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_ce1">out, 1, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_we1">out, 1, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_d1">out, 10, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_3_q1">in, 10, ap_memory, conv1_pooled_padded_3, array</column>
+<column name="conv1_pooled_padded_2_address0">out, 4, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_ce0">out, 1, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_we0">out, 1, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_d0">out, 10, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_q0">in, 10, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_address1">out, 4, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_ce1">out, 1, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_we1">out, 1, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_d1">out, 10, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_2_q1">in, 10, ap_memory, conv1_pooled_padded_2, array</column>
+<column name="conv1_pooled_padded_1_address0">out, 4, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_ce0">out, 1, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_we0">out, 1, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_d0">out, 10, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_q0">in, 10, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_address1">out, 4, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_ce1">out, 1, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_we1">out, 1, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_d1">out, 10, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_1_q1">in, 10, ap_memory, conv1_pooled_padded_1, array</column>
+<column name="conv1_pooled_padded_address0">out, 4, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_ce0">out, 1, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_we0">out, 1, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_d0">out, 10, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_q0">in, 10, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_address1">out, 4, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_ce1">out, 1, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_we1">out, 1, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_d1">out, 10, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_padded_q1">in, 10, ap_memory, conv1_pooled_padded, array</column>
+<column name="conv1_pooled_0_address0">out, 7, ap_memory, conv1_pooled_0, array</column>
+<column name="conv1_pooled_0_ce0">out, 1, ap_memory, conv1_pooled_0, array</column>
+<column name="conv1_pooled_0_q0">in, 1, ap_memory, conv1_pooled_0, array</column>
+<column name="conv1_pooled_1_address0">out, 7, ap_memory, conv1_pooled_1, array</column>
+<column name="conv1_pooled_1_ce0">out, 1, ap_memory, conv1_pooled_1, array</column>
+<column name="conv1_pooled_1_q0">in, 1, ap_memory, conv1_pooled_1, array</column>
+<column name="conv1_pooled_2_address0">out, 7, ap_memory, conv1_pooled_2, array</column>
+<column name="conv1_pooled_2_ce0">out, 1, ap_memory, conv1_pooled_2, array</column>
+<column name="conv1_pooled_2_q0">in, 1, ap_memory, conv1_pooled_2, array</column>
+<column name="conv1_pooled_3_address0">out, 7, ap_memory, conv1_pooled_3, array</column>
+<column name="conv1_pooled_3_ce0">out, 1, ap_memory, conv1_pooled_3, array</column>
+<column name="conv1_pooled_3_q0">in, 1, ap_memory, conv1_pooled_3, array</column>
+<column name="conv1_pooled_4_address0">out, 7, ap_memory, conv1_pooled_4, array</column>
+<column name="conv1_pooled_4_ce0">out, 1, ap_memory, conv1_pooled_4, array</column>
+<column name="conv1_pooled_4_q0">in, 1, ap_memory, conv1_pooled_4, array</column>
+<column name="conv1_pooled_5_address0">out, 7, ap_memory, conv1_pooled_5, array</column>
+<column name="conv1_pooled_5_ce0">out, 1, ap_memory, conv1_pooled_5, array</column>
+<column name="conv1_pooled_5_q0">in, 1, ap_memory, conv1_pooled_5, array</column>
+<column name="conv1_pooled_6_address0">out, 7, ap_memory, conv1_pooled_6, array</column>
+<column name="conv1_pooled_6_ce0">out, 1, ap_memory, conv1_pooled_6, array</column>
+<column name="conv1_pooled_6_q0">in, 1, ap_memory, conv1_pooled_6, array</column>
+<column name="conv1_pooled_7_address0">out, 7, ap_memory, conv1_pooled_7, array</column>
+<column name="conv1_pooled_7_ce0">out, 1, ap_memory, conv1_pooled_7, array</column>
+<column name="conv1_pooled_7_q0">in, 1, ap_memory, conv1_pooled_7, array</column>
+</table>
+</item>
+</section>
+</profile>

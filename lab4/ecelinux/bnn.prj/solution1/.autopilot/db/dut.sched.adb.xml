@@ -1,0 +1,276 @@
+<stg><name>dut</name>
+
+
+<trans_list>
+
+<trans id="20" from="1" to="2">
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+</trans>
+
+<trans id="21" from="2" to="3">
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+</trans>
+
+<trans id="22" from="3" to="4">
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+</trans>
+</trans_list>
+
+
+
+<state_list>
+
+<state id="1" st_id="1">
+
+<operation id="5" st_id="1" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="167" bw="1" op_0_bw="64">
+<![CDATA[
+entry:5 %input_0 = alloca i64 1
+
+]]></Node>
+<StgValue><ssdm name="input_0"/></StgValue>
+</operation>
+
+<operation id="6" st_id="1" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="168" bw="32" op_0_bw="32">
+<![CDATA[
+entry:6 %empty = wait i32 @_ssdm_op_Wait
+
+]]></Node>
+<StgValue><ssdm name="empty"/></StgValue>
+</operation>
+
+<operation id="7" st_id="1" stage="2" lat="2">
+<core></core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="169" bw="0" op_0_bw="0" op_1_bw="32" op_2_bw="1" op_3_bw="0">
+<![CDATA[
+entry:7 %call_ln0 = call void @dut_Pipeline_VITIS_LOOP_26_1, i32 %strm_in, i1 %input_0
+
+]]></Node>
+<StgValue><ssdm name="call_ln0"/></StgValue>
+</operation>
+</state>
+
+<state id="2" st_id="2">
+
+<operation id="8" st_id="2" stage="1" lat="2">
+<core></core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="169" bw="0" op_0_bw="0" op_1_bw="32" op_2_bw="1" op_3_bw="0">
+<![CDATA[
+entry:7 %call_ln0 = call void @dut_Pipeline_VITIS_LOOP_26_1, i32 %strm_in, i1 %input_0
+
+]]></Node>
+<StgValue><ssdm name="call_ln0"/></StgValue>
+</operation>
+</state>
+
+<state id="3" st_id="3">
+
+<operation id="9" st_id="3" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="170" bw="32" op_0_bw="32" op_1_bw="0" op_2_bw="0">
+<![CDATA[
+entry:8 %empty_22 = wait i32 @_ssdm_op_Wait
+
+]]></Node>
+<StgValue><ssdm name="empty_22"/></StgValue>
+</operation>
+
+<operation id="10" st_id="3" stage="2" lat="2">
+<core></core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="171" bw="4" op_0_bw="4" op_1_bw="1" op_2_bw="4" op_3_bw="1" op_4_bw="1" op_5_bw="1" op_6_bw="1" op_7_bw="1" op_8_bw="1" op_9_bw="1" op_10_bw="1" op_11_bw="1" op_12_bw="1" op_13_bw="1" op_14_bw="1" op_15_bw="1" op_16_bw="1" op_17_bw="1" op_18_bw="1" op_19_bw="1" op_20_bw="1" op_21_bw="1" op_22_bw="1" op_23_bw="1" op_24_bw="1" op_25_bw="1" op_26_bw="1" op_27_bw="1" op_28_bw="1" op_29_bw="1" op_30_bw="1" op_31_bw="1" op_32_bw="1" op_33_bw="1" op_34_bw="1" op_35_bw="1" op_36_bw="1" op_37_bw="1" op_38_bw="1" op_39_bw="1" op_40_bw="1" op_41_bw="1" op_42_bw="1" op_43_bw="1" op_44_bw="1" op_45_bw="1" op_46_bw="1" op_47_bw="1" op_48_bw="1" op_49_bw="1" op_50_bw="1" op_51_bw="1" op_52_bw="1" op_53_bw="1" op_54_bw="1" op_55_bw="1" op_56_bw="1" op_57_bw="1" op_58_bw="1" op_59_bw="1" op_60_bw="1" op_61_bw="1" op_62_bw="1" op_63_bw="1" op_64_bw="1" op_65_bw="1" op_66_bw="1" op_67_bw="1" op_68_bw="1" op_69_bw="1" op_70_bw="1" op_71_bw="1" op_72_bw="1" op_73_bw="1" op_74_bw="1" op_75_bw="1" op_76_bw="1" op_77_bw="1" op_78_bw="1" op_79_bw="1" op_80_bw="1" op_81_bw="1" op_82_bw="1" op_83_bw="1" op_84_bw="1" op_85_bw="1" op_86_bw="1" op_87_bw="1" op_88_bw="1" op_89_bw="1" op_90_bw="1" op_91_bw="1" op_92_bw="1" op_93_bw="1" op_94_bw="1" op_95_bw="1" op_96_bw="1" op_97_bw="1" op_98_bw="1" op_99_bw="1" op_100_bw="1" op_101_bw="1" op_102_bw="1" op_103_bw="1" op_104_bw="1" op_105_bw="1" op_106_bw="1" op_107_bw="1" op_108_bw="1" op_109_bw="1" op_110_bw="1" op_111_bw="1" op_112_bw="1" op_113_bw="1" op_114_bw="1" op_115_bw="1" op_116_bw="1" op_117_bw="1" op_118_bw="1" op_119_bw="1" op_120_bw="1" op_121_bw="1" op_122_bw="1" op_123_bw="1" op_124_bw="1" op_125_bw="1" op_126_bw="1" op_127_bw="1" op_128_bw="1" op_129_bw="1" op_130_bw="1" op_131_bw="1" op_132_bw="1" op_133_bw="1" op_134_bw="1" op_135_bw="1" op_136_bw="1" op_137_bw="1" op_138_bw="1" op_139_bw="1" op_140_bw="1" op_141_bw="1" op_142_bw="1" op_143_bw="1" op_144_bw="1" op_145_bw="1" op_146_bw="1" op_147_bw="1" op_148_bw="1" op_149_bw="1" op_150_bw="1" op_151_bw="1" op_152_bw="1" op_153_bw="1" op_154_bw="1" op_155_bw="1" op_156_bw="1" op_157_bw="1" op_158_bw="5" op_159_bw="512" op_160_bw="256" op_161_bw="0" op_162_bw="0" op_163_bw="0">
+<![CDATA[
+entry:9 %ref_tmp1 = call i4 @bnn_xcel, i1 %input_0, i4 %threshold_conv1_V, i1 %p_ZL7w_conv1_0_0_88, i1 %p_ZL7w_conv1_1_0_85, i1 %p_ZL7w_conv1_2_0_82, i1 %p_ZL7w_conv1_0_1_87, i1 %p_ZL7w_conv1_1_1_84, i1 %p_ZL7w_conv1_2_1_81, i1 %p_ZL7w_conv1_0_2_86, i1 %p_ZL7w_conv1_1_2_83, i1 %p_ZL7w_conv1_2_2_80, i1 %input_padded_0230, i1 %input_padded_17247, i1 %p_ZL7w_conv2_0_0_0, i1 %p_ZL7w_conv2_1_0_0, i1 %p_ZL7w_conv2_2_0_0, i1 %p_ZL7w_conv2_3_0_0, i1 %p_ZL7w_conv2_4_0_0, i1 %p_ZL7w_conv2_5_0_0, i1 %p_ZL7w_conv2_6_0_0, i1 %p_ZL7w_conv2_7_0_0, i1 %p_ZL7w_conv2_8_0_0, i1 %p_ZL7w_conv2_9_0_0, i1 %p_ZL7w_conv2_10_0_0, i1 %p_ZL7w_conv2_11_0_0, i1 %p_ZL7w_conv2_12_0_0, i1 %p_ZL7w_conv2_13_0_0, i1 %p_ZL7w_conv2_14_0_0, i1 %p_ZL7w_conv2_15_0_0, i1 %p_ZL7w_conv2_0_1_0, i1 %p_ZL7w_conv2_1_1_0, i1 %p_ZL7w_conv2_2_1_0, i1 %p_ZL7w_conv2_3_1_0, i1 %p_ZL7w_conv2_4_1_0, i1 %p_ZL7w_conv2_5_1_0, i1 %p_ZL7w_conv2_6_1_0, i1 %p_ZL7w_conv2_7_1_0, i1 %p_ZL7w_conv2_8_1_0, i1 %p_ZL7w_conv2_9_1_0, i1 %p_ZL7w_conv2_10_1_0, i1 %p_ZL7w_conv2_11_1_0, i1 %p_ZL7w_conv2_12_1_0, i1 %p_ZL7w_conv2_13_1_0, i1 %p_ZL7w_conv2_14_1_0, i1 %p_ZL7w_conv2_15_1_0, i1 %p_ZL7w_conv2_0_2_0, i1 %p_ZL7w_conv2_1_2_0, i1 %p_ZL7w_conv2_2_2_0, i1 %p_ZL7w_conv2_3_2_0, i1 %p_ZL7w_conv2_4_2_0, i1 %p_ZL7w_conv2_5_2_0, i1 %p_ZL7w_conv2_6_2_0, i1 %p_ZL7w_conv2_7_2_0, i1 %p_ZL7w_conv2_8_2_0, i1 %p_ZL7w_conv2_9_2_0, i1 %p_ZL7w_conv2_10_2_0, i1 %p_ZL7w_conv2_11_2_0, i1 %p_ZL7w_conv2_12_2_0, i1 %p_ZL7w_conv2_13_2_0, i1 %p_ZL7w_conv2_14_2_0, i1 %p_ZL7w_conv2_15_2_0, i1 %p_ZL7w_conv2_0_0_1, i1 %p_ZL7w_conv2_1_0_1, i1 %p_ZL7w_conv2_2_0_1, i1 %p_ZL7w_conv2_3_0_1, i1 %p_ZL7w_conv2_4_0_1, i1 %p_ZL7w_conv2_5_0_1, i1 %p_ZL7w_conv2_6_0_1, i1 %p_ZL7w_conv2_7_0_1, i1 %p_ZL7w_conv2_8_0_1, i1 %p_ZL7w_conv2_9_0_1, i1 %p_ZL7w_conv2_10_0_1, i1 %p_ZL7w_conv2_11_0_1, i1 %p_ZL7w_conv2_12_0_1, i1 %p_ZL7w_conv2_13_0_1, i1 %p_ZL7w_conv2_14_0_1, i1 %p_ZL7w_conv2_15_0_1, i1 %p_ZL7w_conv2_0_1_1, i1 %p_ZL7w_conv2_1_1_1, i1 %p_ZL7w_conv2_2_1_1, i1 %p_ZL7w_conv2_3_1_1, i1 %p_ZL7w_conv2_4_1_1, i1 %p_ZL7w_conv2_5_1_1, i1 %p_ZL7w_conv2_6_1_1, i1 %p_ZL7w_conv2_7_1_1, i1 %p_ZL7w_conv2_8_1_1, i1 %p_ZL7w_conv2_9_1_1, i1 %p_ZL7w_conv2_10_1_1, i1 %p_ZL7w_conv2_11_1_1, i1 %p_ZL7w_conv2_12_1_1, i1 %p_ZL7w_conv2_13_1_1, i1 %p_ZL7w_conv2_14_1_1, i1 %p_ZL7w_conv2_15_1_1, i1 %p_ZL7w_conv2_0_2_1, i1 %p_ZL7w_conv2_1_2_1, i1 %p_ZL7w_conv2_2_2_1, i1 %p_ZL7w_conv2_3_2_1, i1 %p_ZL7w_conv2_4_2_1, i1 %p_ZL7w_conv2_5_2_1, i1 %p_ZL7w_conv2_6_2_1, i1 %p_ZL7w_conv2_7_2_1, i1 %p_ZL7w_conv2_8_2_1, i1 %p_ZL7w_conv2_9_2_1, i1 %p_ZL7w_conv2_10_2_1, i1 %p_ZL7w_conv2_11_2_1, i1 %p_ZL7w_conv2_12_2_1, i1 %p_ZL7w_conv2_13_2_1, i1 %p_ZL7w_conv2_14_2_1, i1 %p_ZL7w_conv2_15_2_1, i1 %p_ZL7w_conv2_0_0_2, i1 %p_ZL7w_conv2_1_0_2, i1 %p_ZL7w_conv2_2_0_2, i1 %p_ZL7w_conv2_3_0_2, i1 %p_ZL7w_conv2_4_0_2, i1 %p_ZL7w_conv2_5_0_2, i1 %p_ZL7w_conv2_6_0_2, i1 %p_ZL7w_conv2_7_0_2, i1 %p_ZL7w_conv2_8_0_2, i1 %p_ZL7w_conv2_9_0_2, i1 %p_ZL7w_conv2_10_0_2, i1 %p_ZL7w_conv2_11_0_2, i1 %p_ZL7w_conv2_12_0_2, i1 %p_ZL7w_conv2_13_0_2, i1 %p_ZL7w_conv2_14_0_2, i1 %p_ZL7w_conv2_15_0_2, i1 %p_ZL7w_conv2_0_1_2, i1 %p_ZL7w_conv2_1_1_2, i1 %p_ZL7w_conv2_2_1_2, i1 %p_ZL7w_conv2_3_1_2, i1 %p_ZL7w_conv2_4_1_2, i1 %p_ZL7w_conv2_5_1_2, i1 %p_ZL7w_conv2_6_1_2, i1 %p_ZL7w_conv2_7_1_2, i1 %p_ZL7w_conv2_8_1_2, i1 %p_ZL7w_conv2_9_1_2, i1 %p_ZL7w_conv2_10_1_2, i1 %p_ZL7w_conv2_11_1_2, i1 %p_ZL7w_conv2_12_1_2, i1 %p_ZL7w_conv2_13_1_2, i1 %p_ZL7w_conv2_14_1_2, i1 %p_ZL7w_conv2_15_1_2, i1 %p_ZL7w_conv2_0_2_2, i1 %p_ZL7w_conv2_1_2_2, i1 %p_ZL7w_conv2_2_2_2, i1 %p_ZL7w_conv2_3_2_2, i1 %p_ZL7w_conv2_4_2_2, i1 %p_ZL7w_conv2_5_2_2, i1 %p_ZL7w_conv2_6_2_2, i1 %p_ZL7w_conv2_7_2_2, i1 %p_ZL7w_conv2_8_2_2, i1 %p_ZL7w_conv2_9_2_2, i1 %p_ZL7w_conv2_10_2_2, i1 %p_ZL7w_conv2_11_2_2, i1 %p_ZL7w_conv2_12_2_2, i1 %p_ZL7w_conv2_13_2_2, i1 %p_ZL7w_conv2_14_2_2, i1 %p_ZL7w_conv2_15_2_2, i5 %threshold_conv2_V, i512 %w_fc1, i256 %w_fc2
+
+]]></Node>
+<StgValue><ssdm name="ref_tmp1"/></StgValue>
+</operation>
+</state>
+
+<state id="4" st_id="4">
+
+<operation id="11" st_id="4" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="162" bw="0" op_0_bw="0" op_1_bw="0">
+<![CDATA[
+entry:0 %spectopmodule_ln19 = spectopmodule void @_ssdm_op_SpecTopModule, void @empty_2
+
+]]></Node>
+<StgValue><ssdm name="spectopmodule_ln19"/></StgValue>
+</operation>
+
+<operation id="12" st_id="4" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="163" bw="0" op_0_bw="0" op_1_bw="32" op_2_bw="0" op_3_bw="32" op_4_bw="32" op_5_bw="0" op_6_bw="32" op_7_bw="32" op_8_bw="0" op_9_bw="0" op_10_bw="0" op_11_bw="32" op_12_bw="32" op_13_bw="32" op_14_bw="32" op_15_bw="0" op_16_bw="0" op_17_bw="32" op_18_bw="32">
+<![CDATA[
+entry:1 %specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %strm_in, void @empty_7, i32 0, i32 0, void @empty_8, i32 0, i32 0, void @empty_8, void @empty_8, void @empty_8, i32 0, i32 0, i32 0, i32 0, void @empty_8, void @empty_8, i32 4294967295, i32 0
+
+]]></Node>
+<StgValue><ssdm name="specinterface_ln0"/></StgValue>
+</operation>
+
+<operation id="13" st_id="4" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="164" bw="0" op_0_bw="0" op_1_bw="32">
+<![CDATA[
+entry:2 %specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i32 %strm_in
+
+]]></Node>
+<StgValue><ssdm name="specbitsmap_ln0"/></StgValue>
+</operation>
+
+<operation id="14" st_id="4" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="165" bw="0" op_0_bw="0" op_1_bw="32" op_2_bw="0" op_3_bw="32" op_4_bw="32" op_5_bw="0" op_6_bw="32" op_7_bw="32" op_8_bw="0" op_9_bw="0" op_10_bw="0" op_11_bw="32" op_12_bw="32" op_13_bw="32" op_14_bw="32" op_15_bw="0" op_16_bw="0" op_17_bw="32" op_18_bw="32">
+<![CDATA[
+entry:3 %specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %strm_out, void @empty_7, i32 0, i32 0, void @empty_8, i32 0, i32 0, void @empty_8, void @empty_8, void @empty_8, i32 0, i32 0, i32 0, i32 0, void @empty_8, void @empty_8, i32 4294967295, i32 0
+
+]]></Node>
+<StgValue><ssdm name="specinterface_ln0"/></StgValue>
+</operation>
+
+<operation id="15" st_id="4" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="166" bw="0" op_0_bw="0" op_1_bw="32">
+<![CDATA[
+entry:4 %specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i32 %strm_out
+
+]]></Node>
+<StgValue><ssdm name="specbitsmap_ln0"/></StgValue>
+</operation>
+
+<operation id="16" st_id="4" stage="1" lat="2">
+<core></core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="171" bw="4" op_0_bw="4" op_1_bw="1" op_2_bw="4" op_3_bw="1" op_4_bw="1" op_5_bw="1" op_6_bw="1" op_7_bw="1" op_8_bw="1" op_9_bw="1" op_10_bw="1" op_11_bw="1" op_12_bw="1" op_13_bw="1" op_14_bw="1" op_15_bw="1" op_16_bw="1" op_17_bw="1" op_18_bw="1" op_19_bw="1" op_20_bw="1" op_21_bw="1" op_22_bw="1" op_23_bw="1" op_24_bw="1" op_25_bw="1" op_26_bw="1" op_27_bw="1" op_28_bw="1" op_29_bw="1" op_30_bw="1" op_31_bw="1" op_32_bw="1" op_33_bw="1" op_34_bw="1" op_35_bw="1" op_36_bw="1" op_37_bw="1" op_38_bw="1" op_39_bw="1" op_40_bw="1" op_41_bw="1" op_42_bw="1" op_43_bw="1" op_44_bw="1" op_45_bw="1" op_46_bw="1" op_47_bw="1" op_48_bw="1" op_49_bw="1" op_50_bw="1" op_51_bw="1" op_52_bw="1" op_53_bw="1" op_54_bw="1" op_55_bw="1" op_56_bw="1" op_57_bw="1" op_58_bw="1" op_59_bw="1" op_60_bw="1" op_61_bw="1" op_62_bw="1" op_63_bw="1" op_64_bw="1" op_65_bw="1" op_66_bw="1" op_67_bw="1" op_68_bw="1" op_69_bw="1" op_70_bw="1" op_71_bw="1" op_72_bw="1" op_73_bw="1" op_74_bw="1" op_75_bw="1" op_76_bw="1" op_77_bw="1" op_78_bw="1" op_79_bw="1" op_80_bw="1" op_81_bw="1" op_82_bw="1" op_83_bw="1" op_84_bw="1" op_85_bw="1" op_86_bw="1" op_87_bw="1" op_88_bw="1" op_89_bw="1" op_90_bw="1" op_91_bw="1" op_92_bw="1" op_93_bw="1" op_94_bw="1" op_95_bw="1" op_96_bw="1" op_97_bw="1" op_98_bw="1" op_99_bw="1" op_100_bw="1" op_101_bw="1" op_102_bw="1" op_103_bw="1" op_104_bw="1" op_105_bw="1" op_106_bw="1" op_107_bw="1" op_108_bw="1" op_109_bw="1" op_110_bw="1" op_111_bw="1" op_112_bw="1" op_113_bw="1" op_114_bw="1" op_115_bw="1" op_116_bw="1" op_117_bw="1" op_118_bw="1" op_119_bw="1" op_120_bw="1" op_121_bw="1" op_122_bw="1" op_123_bw="1" op_124_bw="1" op_125_bw="1" op_126_bw="1" op_127_bw="1" op_128_bw="1" op_129_bw="1" op_130_bw="1" op_131_bw="1" op_132_bw="1" op_133_bw="1" op_134_bw="1" op_135_bw="1" op_136_bw="1" op_137_bw="1" op_138_bw="1" op_139_bw="1" op_140_bw="1" op_141_bw="1" op_142_bw="1" op_143_bw="1" op_144_bw="1" op_145_bw="1" op_146_bw="1" op_147_bw="1" op_148_bw="1" op_149_bw="1" op_150_bw="1" op_151_bw="1" op_152_bw="1" op_153_bw="1" op_154_bw="1" op_155_bw="1" op_156_bw="1" op_157_bw="1" op_158_bw="5" op_159_bw="512" op_160_bw="256" op_161_bw="0" op_162_bw="0" op_163_bw="0">
+<![CDATA[
+entry:9 %ref_tmp1 = call i4 @bnn_xcel, i1 %input_0, i4 %threshold_conv1_V, i1 %p_ZL7w_conv1_0_0_88, i1 %p_ZL7w_conv1_1_0_85, i1 %p_ZL7w_conv1_2_0_82, i1 %p_ZL7w_conv1_0_1_87, i1 %p_ZL7w_conv1_1_1_84, i1 %p_ZL7w_conv1_2_1_81, i1 %p_ZL7w_conv1_0_2_86, i1 %p_ZL7w_conv1_1_2_83, i1 %p_ZL7w_conv1_2_2_80, i1 %input_padded_0230, i1 %input_padded_17247, i1 %p_ZL7w_conv2_0_0_0, i1 %p_ZL7w_conv2_1_0_0, i1 %p_ZL7w_conv2_2_0_0, i1 %p_ZL7w_conv2_3_0_0, i1 %p_ZL7w_conv2_4_0_0, i1 %p_ZL7w_conv2_5_0_0, i1 %p_ZL7w_conv2_6_0_0, i1 %p_ZL7w_conv2_7_0_0, i1 %p_ZL7w_conv2_8_0_0, i1 %p_ZL7w_conv2_9_0_0, i1 %p_ZL7w_conv2_10_0_0, i1 %p_ZL7w_conv2_11_0_0, i1 %p_ZL7w_conv2_12_0_0, i1 %p_ZL7w_conv2_13_0_0, i1 %p_ZL7w_conv2_14_0_0, i1 %p_ZL7w_conv2_15_0_0, i1 %p_ZL7w_conv2_0_1_0, i1 %p_ZL7w_conv2_1_1_0, i1 %p_ZL7w_conv2_2_1_0, i1 %p_ZL7w_conv2_3_1_0, i1 %p_ZL7w_conv2_4_1_0, i1 %p_ZL7w_conv2_5_1_0, i1 %p_ZL7w_conv2_6_1_0, i1 %p_ZL7w_conv2_7_1_0, i1 %p_ZL7w_conv2_8_1_0, i1 %p_ZL7w_conv2_9_1_0, i1 %p_ZL7w_conv2_10_1_0, i1 %p_ZL7w_conv2_11_1_0, i1 %p_ZL7w_conv2_12_1_0, i1 %p_ZL7w_conv2_13_1_0, i1 %p_ZL7w_conv2_14_1_0, i1 %p_ZL7w_conv2_15_1_0, i1 %p_ZL7w_conv2_0_2_0, i1 %p_ZL7w_conv2_1_2_0, i1 %p_ZL7w_conv2_2_2_0, i1 %p_ZL7w_conv2_3_2_0, i1 %p_ZL7w_conv2_4_2_0, i1 %p_ZL7w_conv2_5_2_0, i1 %p_ZL7w_conv2_6_2_0, i1 %p_ZL7w_conv2_7_2_0, i1 %p_ZL7w_conv2_8_2_0, i1 %p_ZL7w_conv2_9_2_0, i1 %p_ZL7w_conv2_10_2_0, i1 %p_ZL7w_conv2_11_2_0, i1 %p_ZL7w_conv2_12_2_0, i1 %p_ZL7w_conv2_13_2_0, i1 %p_ZL7w_conv2_14_2_0, i1 %p_ZL7w_conv2_15_2_0, i1 %p_ZL7w_conv2_0_0_1, i1 %p_ZL7w_conv2_1_0_1, i1 %p_ZL7w_conv2_2_0_1, i1 %p_ZL7w_conv2_3_0_1, i1 %p_ZL7w_conv2_4_0_1, i1 %p_ZL7w_conv2_5_0_1, i1 %p_ZL7w_conv2_6_0_1, i1 %p_ZL7w_conv2_7_0_1, i1 %p_ZL7w_conv2_8_0_1, i1 %p_ZL7w_conv2_9_0_1, i1 %p_ZL7w_conv2_10_0_1, i1 %p_ZL7w_conv2_11_0_1, i1 %p_ZL7w_conv2_12_0_1, i1 %p_ZL7w_conv2_13_0_1, i1 %p_ZL7w_conv2_14_0_1, i1 %p_ZL7w_conv2_15_0_1, i1 %p_ZL7w_conv2_0_1_1, i1 %p_ZL7w_conv2_1_1_1, i1 %p_ZL7w_conv2_2_1_1, i1 %p_ZL7w_conv2_3_1_1, i1 %p_ZL7w_conv2_4_1_1, i1 %p_ZL7w_conv2_5_1_1, i1 %p_ZL7w_conv2_6_1_1, i1 %p_ZL7w_conv2_7_1_1, i1 %p_ZL7w_conv2_8_1_1, i1 %p_ZL7w_conv2_9_1_1, i1 %p_ZL7w_conv2_10_1_1, i1 %p_ZL7w_conv2_11_1_1, i1 %p_ZL7w_conv2_12_1_1, i1 %p_ZL7w_conv2_13_1_1, i1 %p_ZL7w_conv2_14_1_1, i1 %p_ZL7w_conv2_15_1_1, i1 %p_ZL7w_conv2_0_2_1, i1 %p_ZL7w_conv2_1_2_1, i1 %p_ZL7w_conv2_2_2_1, i1 %p_ZL7w_conv2_3_2_1, i1 %p_ZL7w_conv2_4_2_1, i1 %p_ZL7w_conv2_5_2_1, i1 %p_ZL7w_conv2_6_2_1, i1 %p_ZL7w_conv2_7_2_1, i1 %p_ZL7w_conv2_8_2_1, i1 %p_ZL7w_conv2_9_2_1, i1 %p_ZL7w_conv2_10_2_1, i1 %p_ZL7w_conv2_11_2_1, i1 %p_ZL7w_conv2_12_2_1, i1 %p_ZL7w_conv2_13_2_1, i1 %p_ZL7w_conv2_14_2_1, i1 %p_ZL7w_conv2_15_2_1, i1 %p_ZL7w_conv2_0_0_2, i1 %p_ZL7w_conv2_1_0_2, i1 %p_ZL7w_conv2_2_0_2, i1 %p_ZL7w_conv2_3_0_2, i1 %p_ZL7w_conv2_4_0_2, i1 %p_ZL7w_conv2_5_0_2, i1 %p_ZL7w_conv2_6_0_2, i1 %p_ZL7w_conv2_7_0_2, i1 %p_ZL7w_conv2_8_0_2, i1 %p_ZL7w_conv2_9_0_2, i1 %p_ZL7w_conv2_10_0_2, i1 %p_ZL7w_conv2_11_0_2, i1 %p_ZL7w_conv2_12_0_2, i1 %p_ZL7w_conv2_13_0_2, i1 %p_ZL7w_conv2_14_0_2, i1 %p_ZL7w_conv2_15_0_2, i1 %p_ZL7w_conv2_0_1_2, i1 %p_ZL7w_conv2_1_1_2, i1 %p_ZL7w_conv2_2_1_2, i1 %p_ZL7w_conv2_3_1_2, i1 %p_ZL7w_conv2_4_1_2, i1 %p_ZL7w_conv2_5_1_2, i1 %p_ZL7w_conv2_6_1_2, i1 %p_ZL7w_conv2_7_1_2, i1 %p_ZL7w_conv2_8_1_2, i1 %p_ZL7w_conv2_9_1_2, i1 %p_ZL7w_conv2_10_1_2, i1 %p_ZL7w_conv2_11_1_2, i1 %p_ZL7w_conv2_12_1_2, i1 %p_ZL7w_conv2_13_1_2, i1 %p_ZL7w_conv2_14_1_2, i1 %p_ZL7w_conv2_15_1_2, i1 %p_ZL7w_conv2_0_2_2, i1 %p_ZL7w_conv2_1_2_2, i1 %p_ZL7w_conv2_2_2_2, i1 %p_ZL7w_conv2_3_2_2, i1 %p_ZL7w_conv2_4_2_2, i1 %p_ZL7w_conv2_5_2_2, i1 %p_ZL7w_conv2_6_2_2, i1 %p_ZL7w_conv2_7_2_2, i1 %p_ZL7w_conv2_8_2_2, i1 %p_ZL7w_conv2_9_2_2, i1 %p_ZL7w_conv2_10_2_2, i1 %p_ZL7w_conv2_11_2_2, i1 %p_ZL7w_conv2_12_2_2, i1 %p_ZL7w_conv2_13_2_2, i1 %p_ZL7w_conv2_14_2_2, i1 %p_ZL7w_conv2_15_2_2, i5 %threshold_conv2_V, i512 %w_fc1, i256 %w_fc2
+
+]]></Node>
+<StgValue><ssdm name="ref_tmp1"/></StgValue>
+</operation>
+
+<operation id="17" st_id="4" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="172" bw="32" op_0_bw="4">
+<![CDATA[
+entry:10 %zext_ln174 = zext i4 %ref_tmp1
+
+]]></Node>
+<StgValue><ssdm name="zext_ln174"/></StgValue>
+</operation>
+
+<operation id="18" st_id="4" stage="1" lat="1">
+<core>FIFO</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="173" bw="0" op_0_bw="0" op_1_bw="32" op_2_bw="32" op_3_bw="0">
+<![CDATA[
+entry:11 %write_ln174 = write void @_ssdm_op_Write.ap_fifo.volatile.i32P0A, i32 %strm_out, i32 %zext_ln174
+
+]]></Node>
+<StgValue><ssdm name="write_ln174"/></StgValue>
+</operation>
+
+<operation id="19" st_id="4" stage="1" lat="1">
+<core>NULL</core>
+<MemPortIdVec></MemPortIdVec>
+<condition id="-1">
+<or_exp><and_exp></and_exp></or_exp>
+</condition>
+
+<Node id="174" bw="0">
+<![CDATA[
+entry:12 %ret_ln38 = ret
+
+]]></Node>
+<StgValue><ssdm name="ret_ln38"/></StgValue>
+</operation>
+</state>
+</state_list>
+
+
+<ports>
+</ports>
+
+
+<dataflows>
+</dataflows>
+
+
+</stg>

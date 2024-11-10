@@ -63,21 +63,19 @@ bit32_t bnn_xcel(bit input[1][I_WIDTH1][I_WIDTH1]) {
 
   /* First Conv Layer */
   pad<I_CHANNEL1, I_WIDTH1>(input, input_padded);
-  conv<I_CHANNEL1, O_CHANNEL1, I_WIDTH1 + F_PAD>(input_padded, conv1,
-                                                 threshold_conv1, w_conv1);
+  conv1_f(input_padded, conv1, threshold_conv1, w_conv1);
   max_pool<O_CHANNEL1, I_WIDTH1>(conv1, conv1_pooled);
 
   /* Second Conv Layer */
   pad<O_CHANNEL1, I_WIDTH2>(conv1_pooled, conv1_pooled_padded);
-  conv<O_CHANNEL1, O_CHANNEL2, I_WIDTH2 + F_PAD>(conv1_pooled_padded, conv2,
-                                                 threshold_conv2, w_conv2);
+  conv2_f(conv1_pooled_padded, conv2, threshold_conv2, w_conv2);
   max_pool<O_CHANNEL2, I_WIDTH2>(conv2, conv2_pooled);
 
   flatten(conv2_pooled, reshaped);
 
   /* Dense Layers */
   dense<I_UNITS1, I_UNITS2>(reshaped, dense1, w_fc1);
-  sign<I_UNITS2>(dense1, signed1);
+  sign(dense1, signed1);
   dense<I_UNITS2, NUM_DIGITS>(signed1, dense2, w_fc2);
   output = argmax(dense2);
 

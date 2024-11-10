@@ -19,7 +19,7 @@ add_files -tb data
 
 open_solution "solution1"
 # Use Zynq device
-set_part {xc7z020clg484-1}
+set_part {XCU280-FSVH2892-2L-E}
 
 # Target clock period is 10ns
 create_clock -period 10

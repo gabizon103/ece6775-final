@@ -1,0 +1,18 @@
+{"sourceFile": [{
+      "name": "",
+      "directive": [{
+          "functionName": "dut",
+          "label": "",
+          "functionLabel": "",
+          "id": "1",
+          "sourceFile": "\/home\/tic3\/ece6775-final\/lab4\/ecelinux\/run.tcl",
+          "sourceLine": "34",
+          "pragma": {
+            "name": "TOP",
+            "option": [{
+                "name": "name",
+                "value": "dut"
+              }]
+          }
+        }]
+    }]}

@@ -19,6 +19,8 @@ const int O_CHANNEL1 = 16; // conv1 output channels
 const int I_WIDTH2 = 8;    // conv2 input width
 const int O_CHANNEL2 = 32; // conv2 output channels
 const int O_WIDTH = 4;     // conv2 output width
+const int I_CONV1 = I_WIDTH1 + F_PAD;
+const int I_CONV2 = I_WIDTH2 + F_PAD;
 
 // Dense Constants
 const int I_UNITS1 = O_WIDTH * O_WIDTH * O_CHANNEL2; // num of fc1 input units
