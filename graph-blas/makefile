@@ -63,7 +63,7 @@ KERNEL_COMPILE_FLAGS += --save-temps --temp_dir $(KERNEL_COMPILE_DIR)
 KERNEL_LINK_FLAGS += -t $(VITIS_TARGET)
 KERNEL_LINK_FLAGS += --platform $(PLATFORM)
 KERNEL_LINK_FLAGS += --kernel_frequency $(FREQUENCY)
-KERNEL_COMPILE_FLAGS += --config $(KERNEL_LINK_CONFIG)
+KERNEL_LINK_FLAGS += --config $(KERNEL_LINK_CONFIG)
 KERNEL_LINK_FLAGS += --save-temps --temp_dir $(KERNEL_LINK_DIR)
 
 # generate three types of binaries (xclbin):
@@ -94,7 +94,9 @@ endif
 # phony targets to run compiled binaries
 .PHONY: vitis
 vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-	XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+# vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
+# 	XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 
 # ==============================================================================
 # clean stuff
