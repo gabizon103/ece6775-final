@@ -1,12 +1,10 @@
-// #include "utils.cpp"
-
 #ifdef VITIS
 
 extern "C" void spmv (
-  int rows[3], int cols[3], float data[3],
-  int in_vec[3], float out_vec[3]
+  const int* rows, const int* cols, const float* data,
+  const int* in_vec, float* out_vec, const int size
 ) {
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < size; i++) {
     out_vec[rows[i]] += data[i] * in_vec[cols[i]];
   }
 }
