@@ -16,28 +16,29 @@ void spmv (
 
 extern "C" void bfs (
     const int* rows, const int* cols, const int* data,
-    int* last_frontier, const int size
+    int* last_frontier, const int size,
+    int* visited, int* frontier, int* new_frontier
 ) {
 
-  // set all the elements in visited to 1 
-  // since we will use as mask to eliminate elements already visited
-  int visited[size];
-  for (int i = 0; i < size; i++){
-    visited[i] = 1;
-  }
+  // // set all the elements in visited to 1 
+  // // since we will use as mask to eliminate elements already visited
+  // int visited[size];
+  // for (int i = 0; i < size; i++){
+  //   visited[i] = 1;
+  // }
 
-  // start node is set to node 0
-  int frontier[size];
-  for (int i = 0; i < size; i++){ // not sure how they get initialized, so doing like this
-    if (i == 0) frontier[i] = 1; 
-    else frontier[i] = 0;
-  }
+  // // start node is set to node 0
+  // int frontier[size];
+  // for (int i = 0; i < size; i++){ // not sure how they get initialized, so doing like this
+  //   if (i == 0) frontier[i] = 1; 
+  //   else frontier[i] = 0;
+  // }
 
-  // new frontier initialized to 0
-  int new_frontier[size];
-  for (int i = 0; i < size; i++){
-    new_frontier[i] = 0;
-  }
+  // // new frontier initialized to 0
+  // int new_frontier[size];
+  // for (int i = 0; i < size; i++){
+  //   new_frontier[i] = 0;
+  // }
 
   // do many iterations
   for (int i = 0; i < size; i++){
@@ -46,7 +47,7 @@ extern "C" void bfs (
 
     // mark visited nodes
     for (int j = 0; j < size; j++){
-      visited[j] = visited[j] && ~(frontier[j]);
+      visited[j] = visited[j] && (frontier[j] == 0);
     }
 
     // update frontier with new frontier
