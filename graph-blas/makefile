@@ -2,12 +2,12 @@
 # to run as a C++ program
 # ==============================================================================
 HLS_INCLUDE := /opt/xilinx/2022.1/Vitis_HLS/2022.1/include
-graphblas-csim: utils.cpp spmv.cpp
-	g++ utils.cpp graphblas.cpp --std=c++11 -o $@ -I$(HLS_INCLUDE)
+spmv-csim: spmv.cpp spmv-tb.cpp
+	g++ spmv.cpp spmv-tb.cpp --std=c++11 -o $@ -I$(HLS_INCLUDE)
 
 .PHONY: csim
 csim: spmv-csim
-	./graphblas-csim
+	./spmv-csim
 
 # ==============================================================================
 # to run traditional HLS flow
@@ -30,7 +30,7 @@ xocl-host: xocl-host.cpp
 
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
-VITIS_TARGET := hw
+VITIS_TARGET := sw_emu
 # VITIS_TARGET := sw_emu
 
 # in MHz

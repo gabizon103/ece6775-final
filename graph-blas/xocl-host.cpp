@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
         return 1;
     }
     const std::string xclbin = argv[1];
-    const int size = 3;
+    const int size = 16;
 
     // first see if we are in hw
     const char* emulation_mode = getenv("XCL_EMULATION_MODE");
@@ -102,12 +102,12 @@ int main(int argc, char** argv) {
     std::vector<int> rows(size), cols(size), in_vec(size);
     std::vector<float> data(size), out_vec(size), out_ref(size);
 
-    rows = {0, 2, 1};
-    cols = {0, 1, 2};
-    in_vec = {0, 1, 0};
-    data = {5., 4., 7.};
-    
-    for (unsigned i = 0; i < size; ++i) {
+    for (int i = 0; i < size; i++) {
+        rows[i] = rand() % size;
+        cols[i] = rand() % size;
+        data[i] = (float)(rand()) / (float)(rand());
+        float r = ((float) rand() / (RAND_MAX)); // [0,1]
+        in_vec[i] = r < 0.75;
         out_ref[rows[i]] += data[i] * in_vec[cols[i]];
     }
 
@@ -250,13 +250,19 @@ int main(int argc, char** argv) {
     }
     err = kernel.setArg(3, in_vec_buf);
     if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 2, exit!" << std::endl;
+        std::cerr << "[ERROR]: Failed to set kernel argument 3, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
     err = kernel.setArg(4, out_vec_buf);
     if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 3, exit!" << std::endl;
+        std::cerr << "[ERROR]: Failed to set kernel argument 4, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(5, size);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 5, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
@@ -303,11 +309,6 @@ int main(int argc, char** argv) {
             break;
         }
     }
-
-    // for (unsigned i = 0; i < size; ++i) {
-    //     std::cerr << "  Expected: " << out_ref[i] << "\n";
-    //     std::cerr << "    Actual: " << out_vec[i] << "\n";
-    // }
 
     if (pass) {
         std::cout << "Test passed!" << std::endl;
