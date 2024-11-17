@@ -102,12 +102,17 @@ int main(int argc, char** argv) {
     std::vector<int> rows(size), cols(size), in_vec(size);
     std::vector<float> data(size), out_vec(size), out_ref(size);
 
+    // initialize
+    for (int i = 0; i < size; i++) {
+        out_ref[i] = 0;
+        float r = ((float) rand() / (RAND_MAX)); // [0,1]
+        in_vec[i] = r < 0.75;
+    }
+
     for (int i = 0; i < size; i++) {
         rows[i] = rand() % size;
         cols[i] = rand() % size;
         data[i] = (float)(rand()) / (float)(rand());
-        float r = ((float) rand() / (RAND_MAX)); // [0,1]
-        in_vec[i] = r < 0.75;
         out_ref[rows[i]] += data[i] * in_vec[cols[i]];
     }
 
