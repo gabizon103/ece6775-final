@@ -100,56 +100,38 @@ int main(int argc, char** argv) {
 
     // prepare test data
     srand(0x12345678);
-    std::vector<int> rows(SIZE), cols(SIZE), final_frontier(SIZE);
-    
+    std::vector<int> coo(SIZE), final_frontier(SIZE);
+
+    short rows, cols; 
     for (int i = 0; i < SIZE; i++) {
-        rows[i] = rand() % SIZE;
-        cols[i] = rand() % SIZE;
+        rows = (short) (rand() % SIZE);
+        cols = (short) (rand() % SIZE);
+        coo[i] = (rows << 16) | cols;
     }
 
     // allocate device memory
-    cl_mem_ext_ptr_t rows_ext;
-    rows_ext.flags = HBM[0];
-    rows_ext.obj = rows.data();
-    rows_ext.param = 0;
+    cl_mem_ext_ptr_t coo_ext;
+    coo_ext.flags = HBM[0];
+    coo_ext.obj = coo.data();
+    coo_ext.param = 0;
     err = CL_SUCCESS;
 
-    cl::Buffer rows_buf(
+    cl::Buffer coo_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
         SIZE * sizeof(int),
-        &rows_ext,
+        &coo_ext,
         &err
     );
 
     if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to allocate device memory for rows, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-
-    cl_mem_ext_ptr_t cols_ext;
-    cols_ext.flags = HBM[1];
-    cols_ext.obj = cols.data();
-    cols_ext.param = 0;
-    err = CL_SUCCESS;
-
-    cl::Buffer cols_buf(
-        context,
-        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
-        &cols_ext,
-        &err
-    );
-
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to allocate device memory for cols, exit!" << std::endl;
+        std::cerr << "[ERROR]: Failed to allocate device memory for coo, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
 
     cl_mem_ext_ptr_t final_frontier_ext;
-    final_frontier_ext.flags = HBM[2];
+    final_frontier_ext.flags = HBM[1];
     final_frontier_ext.obj = final_frontier.data();
     final_frontier_ext.param = 0;
     err = CL_SUCCESS;
@@ -170,7 +152,7 @@ int main(int argc, char** argv) {
 
     // move data to device
     err = command_q.enqueueMigrateMemObjects(
-        {rows_buf, cols_buf},
+        {coo_buf},
         0 // 0 means from host to device
     );
     if (err != CL_SUCCESS) {
@@ -186,19 +168,13 @@ int main(int argc, char** argv) {
     }
 
     // pass arguments to kernel
-    err = kernel.setArg(0, rows_buf);
+    err = kernel.setArg(0, coo_buf);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to set kernel argument 0, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
-    err = kernel.setArg(1, cols_buf);
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 1, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-    err = kernel.setArg(2, final_frontier_buf);
+    err = kernel.setArg(1, final_frontier_buf);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to set kernel argument 4, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
@@ -237,7 +213,7 @@ int main(int argc, char** argv) {
     }
 
     for (unsigned i = 0; i < SIZE; ++i) {
-        std::cout << "    (row, col): (" << rows[i] << ", " << cols[i] << ") \n";
+        std::cout << "    (row, col): (" << ((coo[i] >> 16) & 0x0000FFFF) << ", " << (coo[i] & 0x0000FFFF) << ") \n";
     }
 
     // check results

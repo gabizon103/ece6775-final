@@ -15,9 +15,17 @@ void spmv (
 }
 
 extern "C" void bfs (
-    const int* rows, const int* cols,
+    const int* coo,
     int* last_frontier
 ) {
+
+  // parse coo into rows and cols (I think this could be somehow optimized)
+  int rows[SIZE];
+  int cols[SIZE];
+  for (int i = 0; i < SIZE; i++){
+    rows[i] = (coo[i] >> 16) & 0x0000FFFF;
+    cols[i] = (coo[i] & 0x0000FFFF);
+  }
 
   // set all the elements in visited to 1 
   // since we will use as mask to eliminate elements already visited
