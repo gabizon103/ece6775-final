@@ -30,8 +30,8 @@ xocl-host: xocl-host.cpp
 
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
-VITIS_TARGET := hw
-# VITIS_TARGET := sw_emu
+# VITIS_TARGET := hw
+VITIS_TARGET := sw_emu
 
 # in MHz
 FREQUENCY := 100
@@ -52,6 +52,7 @@ PLATFORM := xilinx_u280_gen3x16_xdma_1_202211_1
 KERNEL_COMPILE_DIR = $(KERNEL_NAME).$(VITIS_TARGET).vpp.compile.prj
 KERNEL_LINK_DIR = $(KERNEL_NAME).$(VITIS_TARGET).vpp.link.prj
 
+KERNEL_COMPILE_FLAGS += -I.
 KERNEL_COMPILE_FLAGS += -DVITIS
 KERNEL_COMPILE_FLAGS += -t $(VITIS_TARGET)
 KERNEL_COMPILE_FLAGS += --platform $(PLATFORM)
@@ -93,10 +94,10 @@ endif
 
 # phony targets to run compiled binaries
 .PHONY: vitis
-vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 # vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-# 	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+# 	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
+	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 
 # ==============================================================================
 # clean stuff

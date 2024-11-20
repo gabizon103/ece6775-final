@@ -3,6 +3,8 @@
 #include <vector>
 #include <cstring>
 
+#include "bfs.hpp"
+
 #include "xcl2.hpp"
 #define CHANNEL_NAME(n) n | XCL_MEM_TOPOLOGY
 
@@ -30,7 +32,6 @@ int main(int argc, char** argv) {
         return 1;
     }
     const std::string xclbin = argv[1];
-    const int size = 16;
 
     // first see if we are in hw
     const char* emulation_mode = getenv("XCL_EMULATION_MODE");
@@ -99,30 +100,11 @@ int main(int argc, char** argv) {
 
     // prepare test data
     srand(0x12345678);
-    std::vector<int> rows(size), cols(size), data(size), final_frontier(size);
-    std::vector<int> visited(size), frontier(size), new_frontier(size);
-
-    // set all the elements in visited to 1 
-    // since we will use as mask to eliminate elements already visited
-    for (int i = 0; i < size; i++){
-        visited[i] = 1;
-    }
-
-    // start node is set to node 0
-    for (int i = 0; i < size; i++){ // not sure how they get initialized, so doing like this
-        if (i == 0) frontier[i] = 1; 
-        else frontier[i] = 0;
-    }
-
-    // new frontier initialized to 0
-    for (int i = 0; i < size; i++){
-        new_frontier[i] = 0;
-    }
-
-    for (int i = 0; i < size; i++) {
-        rows[i] = rand() % size;
-        cols[i] = rand() % size;
-        data[i] = 1;
+    std::vector<int> rows(SIZE), cols(SIZE), final_frontier(SIZE);
+    
+    for (int i = 0; i < SIZE; i++) {
+        rows[i] = rand() % SIZE;
+        cols[i] = rand() % SIZE;
     }
 
     // allocate device memory
@@ -135,7 +117,7 @@ int main(int argc, char** argv) {
     cl::Buffer rows_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        size * sizeof(int),
+        SIZE * sizeof(int),
         &rows_ext,
         &err
     );
@@ -155,7 +137,7 @@ int main(int argc, char** argv) {
     cl::Buffer cols_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        size * sizeof(int),
+        SIZE * sizeof(int),
         &cols_ext,
         &err
     );
@@ -166,28 +148,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    cl_mem_ext_ptr_t data_ext;
-    data_ext.flags = HBM[2];
-    data_ext.obj = data.data();
-    data_ext.param = 0;
-    err = CL_SUCCESS;
-
-    cl::Buffer data_buf(
-        context,
-        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        size * sizeof(int),
-        &data_ext,
-        &err
-    );
-    
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to allocate device memory for data, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-
     cl_mem_ext_ptr_t final_frontier_ext;
-    final_frontier_ext.flags = HBM[3];
+    final_frontier_ext.flags = HBM[2];
     final_frontier_ext.obj = final_frontier.data();
     final_frontier_ext.param = 0;
     err = CL_SUCCESS;
@@ -195,7 +157,7 @@ int main(int argc, char** argv) {
     cl::Buffer final_frontier_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
-        size * sizeof(int),
+        SIZE * sizeof(int),
         &final_frontier_ext,
         &err
     );
@@ -206,72 +168,9 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // allocate device memory
-    cl_mem_ext_ptr_t visited_ext;
-    visited_ext.flags = HBM[4];
-    visited_ext.obj = visited.data();
-    visited_ext.param = 0;
-    err = CL_SUCCESS;
-
-    cl::Buffer visited_buf(
-        context,
-        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-        size * sizeof(int),
-        &visited_ext,
-        &err
-    );
-
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to allocate device memory for visited, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-
-    // allocate device memory
-    cl_mem_ext_ptr_t frontier_ext;
-    frontier_ext.flags = HBM[5];
-    frontier_ext.obj = frontier.data();
-    frontier_ext.param = 0;
-    err = CL_SUCCESS;
-
-    cl::Buffer frontier_buf(
-        context,
-        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-        size * sizeof(int),
-        &frontier_ext,
-        &err
-    );
-
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to allocate device memory for frontier, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-
-    // allocate device memory
-    cl_mem_ext_ptr_t new_frontier_ext;
-    new_frontier_ext.flags = HBM[6];
-    new_frontier_ext.obj = new_frontier.data();
-    new_frontier_ext.param = 0;
-    err = CL_SUCCESS;
-
-    cl::Buffer new_frontier_buf(
-        context,
-        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-        size * sizeof(int),
-        &new_frontier_ext,
-        &err
-    );
-
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to allocate device memory for new_frontier, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-
     // move data to device
     err = command_q.enqueueMigrateMemObjects(
-        {rows_buf, cols_buf, data_buf, visited_buf, frontier_buf, new_frontier_buf},
+        {rows_buf, cols_buf},
         0 // 0 means from host to device
     );
     if (err != CL_SUCCESS) {
@@ -299,39 +198,9 @@ int main(int argc, char** argv) {
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
-    err = kernel.setArg(2, data_buf);
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 2, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-    err = kernel.setArg(3, final_frontier_buf);
+    err = kernel.setArg(2, final_frontier_buf);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to set kernel argument 4, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-    err = kernel.setArg(4, size);
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 5, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-    err = kernel.setArg(5, visited_buf);
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 5, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-    err = kernel.setArg(6, frontier_buf);
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 5, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-    err = kernel.setArg(7, new_frontier_buf);
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 5, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
@@ -367,20 +236,14 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    for (unsigned i = 0; i < size; ++i) {
-        std::cout << "    rows: " << i << ": " << rows[i] << "\n";
-    }
-    for (unsigned i = 0; i < size; ++i) {
-        std::cout << "    cols: " << i << ": " << cols[i] << "\n";
-    }
-    for (unsigned i = 0; i < size; ++i) {
-        std::cout << "    data: " << i << ": " << data[i] << "\n";
+    for (unsigned i = 0; i < SIZE; ++i) {
+        std::cout << "    (row, col): (" << rows[i] << ", " << cols[i] << ") \n";
     }
 
     // check results
     bool pass = true;
-    for (unsigned i = 0; i < size; ++i) {
-        std::cout << "    Actual: " << i << ": " << final_frontier[i] << "\n";
+    for (unsigned i = 0; i < SIZE; ++i) {
+        std::cout << "    final level: " << i << ": " << final_frontier[i] << "\n";
         // if (final_frontier[i] != out_ref[i]) {
         //     std::cerr << "[ERROR]: Result mismatch at index " << i << "!" << std::endl;
         //     std::cerr << "  Expected: " << out_ref[i] << "\n";
