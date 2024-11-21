@@ -8,7 +8,6 @@
 #include "xcl2.hpp"
 #define CHANNEL_NAME(n) n | XCL_MEM_TOPOLOGY
 
-
 // u280 memory channels
 const int HBM[32] = {
     CHANNEL_NAME(0),  CHANNEL_NAME(1),  CHANNEL_NAME(2),  CHANNEL_NAME(3),  CHANNEL_NAME(4),
@@ -109,10 +108,39 @@ int main(int argc, char** argv) {
         coo[i] = (rows << 16) | cols;
     }
 
+    // sort by rows
+    for (int i = 0; i < SIZE-1; i++) {
+        int min_idx = i;
+        for (int j = i + 1; i < SIZE; j++) {
+            short row_j = coo[j] >> 16;
+            short row_min_idx = coo[min_idx] >> 16;
+            if (row_j < row_min_idx) {
+                min_idx = j;
+            }
+            swap(coo[i], coo[min_idx]);
+        }
+    }
+
+    // now coo is sorted by row
+    // do pre processing to split up rows by PE (cyclically)
+    int rows_per_pe = SIZE / NUM_PE;
+    int matrix_split[NUM_PE][rows_per_pe * SIZE]; // this seems bad
+    int pe_counters[NUM_PE] = {0};
+    for (int i = 0; i < SIZE; i++) {
+        short row = coo[i] >> 16;
+        short pe = row % NUM_PE;
+        int idx = pe_counters[pe];
+        matrix_split[pe][idx] = coo[i];
+        pe_counters[pe]++;
+    }
+
+    // now we pas matrix_split into bfs
+
     // allocate device memory
-    cl_mem_ext_ptr_t coo_ext;
+    // cl_mem_ext_ptr_t coo_ext;
+    cl_mem_ext_ptr_t matrix_split_in;
     coo_ext.flags = HBM[0];
-    coo_ext.obj = coo.data();
+    coo_ext.obj = matrix_split;
     coo_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -120,7 +148,7 @@ int main(int argc, char** argv) {
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
         SIZE * sizeof(int),
-        &coo_ext,
+        &matrix_split_in,
         &err
     );
 
