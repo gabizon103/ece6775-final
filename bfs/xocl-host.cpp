@@ -117,14 +117,20 @@ int main(int argc, char** argv) {
             if (row_j < row_min_idx) {
                 min_idx = j;
             }
-            swap(coo[i], coo[min_idx]);
+            std::swap(coo[i], coo[min_idx]);
         }
+    }
+
+    // when we use suitesparse, NNZ << SIZE
+    // here, we set NNZ = SIZE because we are testing on small matrices
+    int row_nnz[NUM_PE];
+    for (int i = 0; i < NUM_PE; i++) {
+        row_nnz[i] = ROWS_PER_PE*SIZE; // each row has SIZE nnz entries
     }
 
     // now coo is sorted by row
     // do pre processing to split up rows by PE (cyclically)
-    int rows_per_pe = SIZE / NUM_PE;
-    int matrix_split[NUM_PE][rows_per_pe * SIZE]; // this seems bad
+    int matrix_split[NUM_PE][ROWS_PER_PE * SIZE]; // this seems bad
     int pe_counters[NUM_PE] = {0};
     for (int i = 0; i < SIZE; i++) {
         short row = coo[i] >> 16;
@@ -138,7 +144,7 @@ int main(int argc, char** argv) {
 
     // allocate device memory
     // cl_mem_ext_ptr_t coo_ext;
-    cl_mem_ext_ptr_t matrix_split_in;
+    cl_mem_ext_ptr_t coo_ext;
     coo_ext.flags = HBM[0];
     coo_ext.obj = matrix_split;
     coo_ext.param = 0;
@@ -148,7 +154,7 @@ int main(int argc, char** argv) {
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
         SIZE * sizeof(int),
-        &matrix_split_in,
+        &coo_ext,
         &err
     );
 
@@ -169,6 +175,20 @@ int main(int argc, char** argv) {
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
         SIZE * sizeof(int),
         &final_frontier_ext,
+        &err
+    );
+
+    cl_mem_ext_ptr_t row_nnz_ext;
+    row_nnz_ext.flags = HBM[2];
+    row_nnz_ext.obj = row_nnz;
+    row_nnz_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer row_nnz_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        NUM_PE * sizeof(int),
+        &row_nnz_ext,
         &err
     );
     
@@ -204,7 +224,13 @@ int main(int argc, char** argv) {
     }
     err = kernel.setArg(1, final_frontier_buf);
     if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 4, exit!" << std::endl;
+        std::cerr << "[ERROR]: Failed to set kernel argument 1, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(2, row_nnz_buf);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 2, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }

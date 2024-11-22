@@ -94,10 +94,10 @@ endif
 
 # phony targets to run compiled binaries
 .PHONY: vitis
-# vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-# 	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+# vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
+# 	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 
 # ==============================================================================
 # clean stuff
