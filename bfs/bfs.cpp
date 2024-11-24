@@ -39,6 +39,11 @@ void spmv (
   int out_vec[SIZE],
   int pe_counter[NUM_PE]
 ) {
+
+  for (int i = 0; i < SIZE; i++){
+    out_vec[i] = 0;
+  }
+  
   #pragma HLS dataflow
 
   // each PE has a local copy of the input vector
