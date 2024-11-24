@@ -123,11 +123,15 @@ int main(int argc, char** argv) {
 
     // max it can be is all coo (SIZE number) go to one PE 
     // could do counting first and then create arrays based on count for each pe
-    int matrix_split[NUM_PE][SIZE]; 
+    // int matrix_split[NUM_PE][SIZE]; 
+    std::vector<std::vector<int>> matrix_split(NUM_PE, std::vector<int>(SIZE));
 
     // use pe_counters to specify the number of nnz entries for each PE since
     // spmv goes through all coo coordinates it receives
-    int pe_counter[NUM_PE] = {0};
+    std::vector<int> pe_counter(NUM_PE);
+    for (int i = 0; i < NUM_PE; i++) {
+        pe_counter[i] = 0;
+    }
 
     // now coo is sorted by row
     // do pre processing to split up rows by PE (cyclically)
@@ -144,7 +148,7 @@ int main(int argc, char** argv) {
     // allocate device memory
     cl_mem_ext_ptr_t pe_data0_ext;
     pe_data0_ext.flags = HBM[0];
-    pe_data0_ext.obj = matrix_split[0];
+    pe_data0_ext.obj = matrix_split[0].data();
     pe_data0_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -164,7 +168,7 @@ int main(int argc, char** argv) {
 
     cl_mem_ext_ptr_t pe_data1_ext;
     pe_data1_ext.flags = HBM[1];
-    pe_data1_ext.obj = matrix_split[1];
+    pe_data1_ext.obj = matrix_split[1].data();
     pe_data1_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -184,7 +188,7 @@ int main(int argc, char** argv) {
 
     cl_mem_ext_ptr_t pe_data2_ext;
     pe_data2_ext.flags = HBM[2];
-    pe_data2_ext.obj = matrix_split[2];
+    pe_data2_ext.obj = matrix_split[2].data();
     pe_data2_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -204,7 +208,7 @@ int main(int argc, char** argv) {
 
     cl_mem_ext_ptr_t pe_data3_ext;
     pe_data3_ext.flags = HBM[3];
-    pe_data3_ext.obj = matrix_split[3];
+    pe_data3_ext.obj = matrix_split[3].data();
     pe_data3_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -224,7 +228,7 @@ int main(int argc, char** argv) {
 
     cl_mem_ext_ptr_t pe_data4_ext;
     pe_data4_ext.flags = HBM[4];
-    pe_data4_ext.obj = matrix_split[4];
+    pe_data4_ext.obj = matrix_split[4].data();
     pe_data4_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -244,7 +248,7 @@ int main(int argc, char** argv) {
 
     cl_mem_ext_ptr_t pe_data5_ext;
     pe_data5_ext.flags = HBM[5];
-    pe_data5_ext.obj = matrix_split[5];
+    pe_data5_ext.obj = matrix_split[5].data();
     pe_data5_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -264,7 +268,7 @@ int main(int argc, char** argv) {
 
     cl_mem_ext_ptr_t pe_data6_ext;
     pe_data6_ext.flags = HBM[6];
-    pe_data6_ext.obj = matrix_split[6];
+    pe_data6_ext.obj = matrix_split[6].data();
     pe_data6_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -284,7 +288,7 @@ int main(int argc, char** argv) {
 
     cl_mem_ext_ptr_t pe_data7_ext;
     pe_data7_ext.flags = HBM[7];
-    pe_data7_ext.obj = matrix_split[7];
+    pe_data7_ext.obj = matrix_split[7].data();
     pe_data7_ext.param = 0;
     err = CL_SUCCESS;
 
@@ -304,7 +308,7 @@ int main(int argc, char** argv) {
 
     cl_mem_ext_ptr_t pe_counter_ext;
     pe_counter_ext.flags = HBM[8];
-    pe_counter_ext.obj = pe_counter;
+    pe_counter_ext.obj = pe_counter.data();
     pe_counter_ext.param = 0;
     err = CL_SUCCESS;
 
