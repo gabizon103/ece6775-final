@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
     // sort by rows
     for (int i = 0; i < SIZE-1; i++) {
         int min_idx = i;
-        for (int j = i + 1; i < SIZE; j++) {
+        for (int j = i + 1; j < SIZE; j++) {
             short row_j = coo[j] >> 16;
             short row_min_idx = coo[min_idx] >> 16;
             if (row_j < row_min_idx) {
@@ -121,51 +121,209 @@ int main(int argc, char** argv) {
         }
     }
 
-    // when we use suitesparse, NNZ << SIZE
-    // here, we set NNZ = SIZE because we are testing on small matrices
-    int row_nnz[NUM_PE];
-    for (int i = 0; i < NUM_PE; i++) {
-        row_nnz[i] = ROWS_PER_PE*SIZE; // each row has SIZE nnz entries
-    }
+    // max it can be is all coo (SIZE number) go to one PE 
+    // could do counting first and then create arrays based on count for each pe
+    int matrix_split[NUM_PE][SIZE]; 
+
+    // use pe_counters to specify the number of nnz entries for each PE since
+    // spmv goes through all coo coordinates it receives
+    int pe_counter[NUM_PE] = {0};
 
     // now coo is sorted by row
     // do pre processing to split up rows by PE (cyclically)
-    int matrix_split[NUM_PE][ROWS_PER_PE * SIZE]; // this seems bad
-    int pe_counters[NUM_PE] = {0};
     for (int i = 0; i < SIZE; i++) {
         short row = coo[i] >> 16;
         short pe = row % NUM_PE;
-        int idx = pe_counters[pe];
+        int idx = pe_counter[pe];
         matrix_split[pe][idx] = coo[i];
-        pe_counters[pe]++;
+        pe_counter[pe]++;
     }
 
     // now we pas matrix_split into bfs
 
     // allocate device memory
-    // cl_mem_ext_ptr_t coo_ext;
-    cl_mem_ext_ptr_t coo_ext;
-    coo_ext.flags = HBM[0];
-    coo_ext.obj = matrix_split;
-    coo_ext.param = 0;
+    cl_mem_ext_ptr_t pe_data0_ext;
+    pe_data0_ext.flags = HBM[0];
+    pe_data0_ext.obj = matrix_split[0];
+    pe_data0_ext.param = 0;
     err = CL_SUCCESS;
 
-    cl::Buffer coo_buf(
+    cl::Buffer pe_data0_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
         SIZE * sizeof(int),
-        &coo_ext,
+        &pe_data0_ext,
         &err
     );
 
     if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to allocate device memory for coo, exit!" << std::endl;
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_data0, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+
+    cl_mem_ext_ptr_t pe_data1_ext;
+    pe_data1_ext.flags = HBM[1];
+    pe_data1_ext.obj = matrix_split[1];
+    pe_data1_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer pe_data1_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        SIZE * sizeof(int),
+        &pe_data1_ext,
+        &err
+    );
+
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_data1, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+
+    cl_mem_ext_ptr_t pe_data2_ext;
+    pe_data2_ext.flags = HBM[2];
+    pe_data2_ext.obj = matrix_split[2];
+    pe_data2_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer pe_data2_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        SIZE * sizeof(int),
+        &pe_data2_ext,
+        &err
+    );
+
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_data2, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+
+    cl_mem_ext_ptr_t pe_data3_ext;
+    pe_data3_ext.flags = HBM[3];
+    pe_data3_ext.obj = matrix_split[3];
+    pe_data3_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer pe_data3_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        SIZE * sizeof(int),
+        &pe_data3_ext,
+        &err
+    );
+
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_data3, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+
+    cl_mem_ext_ptr_t pe_data4_ext;
+    pe_data4_ext.flags = HBM[4];
+    pe_data4_ext.obj = matrix_split[4];
+    pe_data4_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer pe_data4_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        SIZE * sizeof(int),
+        &pe_data4_ext,
+        &err
+    );
+
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_data4, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+
+    cl_mem_ext_ptr_t pe_data5_ext;
+    pe_data5_ext.flags = HBM[5];
+    pe_data5_ext.obj = matrix_split[5];
+    pe_data5_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer pe_data5_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        SIZE * sizeof(int),
+        &pe_data5_ext,
+        &err
+    );
+
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_data5, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+
+    cl_mem_ext_ptr_t pe_data6_ext;
+    pe_data6_ext.flags = HBM[6];
+    pe_data6_ext.obj = matrix_split[6];
+    pe_data6_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer pe_data6_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        SIZE * sizeof(int),
+        &pe_data6_ext,
+        &err
+    );
+
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_data6, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+
+    cl_mem_ext_ptr_t pe_data7_ext;
+    pe_data7_ext.flags = HBM[7];
+    pe_data7_ext.obj = matrix_split[7];
+    pe_data7_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer pe_data7_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        SIZE * sizeof(int),
+        &pe_data7_ext,
+        &err
+    );
+
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_data7, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+
+    cl_mem_ext_ptr_t pe_counter_ext;
+    pe_counter_ext.flags = HBM[8];
+    pe_counter_ext.obj = pe_counter;
+    pe_counter_ext.param = 0;
+    err = CL_SUCCESS;
+
+    cl::Buffer pe_counter_buf(
+        context,
+        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+        NUM_PE * sizeof(int),
+        &pe_counter_ext,
+        &err
+    );
+
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to allocate device memory for pe_counter, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
 
     cl_mem_ext_ptr_t final_frontier_ext;
-    final_frontier_ext.flags = HBM[1];
+    final_frontier_ext.flags = HBM[9];
     final_frontier_ext.obj = final_frontier.data();
     final_frontier_ext.param = 0;
     err = CL_SUCCESS;
@@ -178,29 +336,10 @@ int main(int argc, char** argv) {
         &err
     );
 
-    cl_mem_ext_ptr_t row_nnz_ext;
-    row_nnz_ext.flags = HBM[2];
-    row_nnz_ext.obj = row_nnz;
-    row_nnz_ext.param = 0;
-    err = CL_SUCCESS;
-
-    cl::Buffer row_nnz_buf(
-        context,
-        CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        NUM_PE * sizeof(int),
-        &row_nnz_ext,
-        &err
-    );
-    
-    if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to allocate device memory for final_frontier, exit!" << std::endl;
-        std::cerr << "         Error code: " << err << std::endl;
-        return 1;
-    }
-
     // move data to device
     err = command_q.enqueueMigrateMemObjects(
-        {coo_buf},
+        {pe_data0_buf, pe_data1_buf, pe_data2_buf, pe_data3_buf, pe_data4_buf, 
+        pe_data5_buf, pe_data6_buf, pe_data7_buf, pe_counter_buf},
         0 // 0 means from host to device
     );
     if (err != CL_SUCCESS) {
@@ -216,21 +355,63 @@ int main(int argc, char** argv) {
     }
 
     // pass arguments to kernel
-    err = kernel.setArg(0, coo_buf);
+    err = kernel.setArg(0, pe_data0_buf);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to set kernel argument 0, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
-    err = kernel.setArg(1, final_frontier_buf);
+    err = kernel.setArg(1, pe_data1_buf);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to set kernel argument 1, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
-    err = kernel.setArg(2, row_nnz_buf);
+    err = kernel.setArg(2, pe_data2_buf);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to set kernel argument 2, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(3, pe_data3_buf);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 3, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(4, pe_data4_buf);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 4, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(5, pe_data5_buf);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 5, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(6, pe_data6_buf);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 6, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(7, pe_data7_buf);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 7, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(8, pe_counter_buf);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 8, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(9, final_frontier_buf);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 1, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
@@ -283,11 +464,11 @@ int main(int argc, char** argv) {
         // }
     }
 
-    if (pass) {
-        std::cout << "Test passed!" << std::endl;
-    } else {
-        std::cout << "Test failed!" << std::endl;
-    }
+    // if (pass) {
+    //     std::cout << "Test passed!" << std::endl;
+    // } else {
+    //     std::cout << "Test failed!" << std::endl;
+    // }
 
     return (pass) ? 0 : 1;
 }

@@ -1,9 +1,9 @@
 #ifndef BFS_HPP
 #define BFS_HPP
 
-#define SIZE 4
-#define NUM_PE 2
-#define ROWS_PER_PE SIZE / NUM_PE
-#define ENTRIES_PER_PE SIZE * ROWS_PER_PE
+constexpr int SIZE = 8;
+constexpr int NUM_PE = 8;
+constexpr int ROWS_PER_PE = SIZE / NUM_PE;
+constexpr int ENTRIES_PER_PE = SIZE * ROWS_PER_PE;
 
 #endif

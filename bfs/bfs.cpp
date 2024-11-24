@@ -2,29 +2,42 @@
 #include "hls_stream.h"
 
 void pe (
-  hls::stream<int> coo,
+  hls::stream<int> &coo,
   int in_buf[SIZE],
   int out_buf[ROWS_PER_PE],
-  int bound
+  int bound,
+  int pe_id
 ) {
 
-  short row;
-  short col;
-  int row_col;
+  // initialize to 0 just in case
+  for (int i = 0; i < ROWS_PER_PE; i++) {
+    out_buf[i] = 0;
+  }
+
+  short row_global, col;
+  int row_local, row_col;
   // bound is the number of entries this PE has to handle
   for (int i = 0; i < bound; i++) {
     row_col = coo.read();
-    row = row_col >> 16;
+    row_global = row_col >> 16;
     col = row_col & 0x0000FFFF;
-    out_buf[row] += in_buf[col];
+    row_local = (row_global - pe_id) / NUM_PE;
+    out_buf[row_local] += in_buf[col];
   }
 }
 
 void spmv (
-  int coo[NUM_PE][ENTRIES_PER_PE],
+  int pe_data0[SIZE],
+  int pe_data1[SIZE],
+  int pe_data2[SIZE],
+  int pe_data3[SIZE],
+  int pe_data4[SIZE],
+  int pe_data5[SIZE],
+  int pe_data6[SIZE],
+  int pe_data7[SIZE],
   int in_vec[SIZE],
   int out_vec[SIZE],
-  int row_nnz[NUM_PE]
+  int pe_counter[NUM_PE]
 ) {
   #pragma HLS dataflow
 
@@ -33,10 +46,19 @@ void spmv (
   #pragma HLS array_partition variable=vecbuf dim=1
 
   // FIFOs for writing to each PE
-  hls::stream<int> pe_coords[NUM_PE];
+  hls::stream<int> pe_coords0, pe_coords1, pe_coords2, pe_coords3,
+                   pe_coords4, pe_coords5, pe_coords6, pe_coords7;
+  #pragma HLS stream variable=pe_coords0 depth=32
+  #pragma HLS stream variable=pe_coords1 depth=32
+  #pragma HLS stream variable=pe_coords2 depth=32
+  #pragma HLS stream variable=pe_coords3 depth=32
+  #pragma HLS stream variable=pe_coords4 depth=32
+  #pragma HLS stream variable=pe_coords5 depth=32
+  #pragma HLS stream variable=pe_coords6 depth=32
+  #pragma HLS stream variable=pe_coords7 depth=32
 
   // each PE accumulates its local results
-  int resbuf[NUM_PE][ROWS_PER_PE];
+  int resbuf[NUM_PE][ROWS_PER_PE]; 
   #pragma HLS array_partition variable=resbuf dim=1
 
   // write to each vecbuf
@@ -47,38 +69,66 @@ void spmv (
   }
 
   // write data in `coo` to `pe_coords`
-  for (int i = 0; i < NUM_PE; i++) {
-    for (int j = 0; j < ENTRIES_PER_PE; j++) {
-      pe_coords[i].write(coo[i][j]);
-    }
+  for (int j = 0; j < pe_counter[0]; j++) {
+    pe_coords0.write(pe_data0[j]);
+  }
+  for (int j = 0; j < pe_counter[1]; j++) {
+    pe_coords1.write(pe_data1[j]);
+  }
+  for (int j = 0; j < pe_counter[2]; j++) {
+    pe_coords2.write(pe_data2[j]);
+  }
+  for (int j = 0; j < pe_counter[3]; j++) {
+    pe_coords3.write(pe_data3[j]);
+  }
+  for (int j = 0; j < pe_counter[4]; j++) {
+    pe_coords4.write(pe_data4[j]);
+  }
+  for (int j = 0; j < pe_counter[5]; j++) {
+    pe_coords5.write(pe_data5[j]);
+  }
+  for (int j = 0; j < pe_counter[6]; j++) {
+    pe_coords6.write(pe_data6[j]);
+  }
+  for (int j = 0; j < pe_counter[7]; j++) {
+    pe_coords7.write(pe_data7[j]);
   }
 
   // spawn all the PEs
-  for (int i = 0; i < NUM_PE; i++) {
-    pe(pe_coords[i], vecbuf[i], resbuf[i], row_nnz[i]);
-  }
+  #pragma HLS dataflow
+  pe(pe_coords0, vecbuf[0], resbuf[0], pe_counter[0], 0);
+  pe(pe_coords1, vecbuf[1], resbuf[1], pe_counter[1], 1);
+  pe(pe_coords2, vecbuf[2], resbuf[2], pe_counter[2], 2);
+  pe(pe_coords3, vecbuf[3], resbuf[3], pe_counter[3], 3);
+  pe(pe_coords4, vecbuf[4], resbuf[4], pe_counter[4], 4);
+  pe(pe_coords5, vecbuf[5], resbuf[5], pe_counter[5], 5);
+  pe(pe_coords6, vecbuf[6], resbuf[6], pe_counter[6], 6);
+  pe(pe_coords7, vecbuf[7], resbuf[7], pe_counter[7], 7);
 
   // then, write from each PE's resbuf into output
   for (int i = 0; i < NUM_PE; i++) {
+    int pe_id = i;
     for (int j = 0; j < ROWS_PER_PE; j++) {
-      out_vec[i*NUM_PE+j] = resbuf[i][j]; 
+      int global_row = pe_id + j * NUM_PE;
+      if (global_row < SIZE) { // just in case we set NUM_PE > SIZE (but i doubt it will happen)
+        out_vec[global_row] += resbuf[i][j];
+      }
     }
   }
 }
 
 extern "C" void bfs (
-    int coo[NUM_PE][ENTRIES_PER_PE], // host splits it by PE
-    int last_frontier[SIZE], // what we return
-    int row_nnz[NUM_PE] // number of nonzeros in each row
+    int pe_data0[SIZE],
+    int pe_data1[SIZE],
+    int pe_data2[SIZE],
+    int pe_data3[SIZE],
+    int pe_data4[SIZE],
+    int pe_data5[SIZE],
+    int pe_data6[SIZE],
+    int pe_data7[SIZE],
+    int pe_counter[NUM_PE],
+    int last_frontier[SIZE] // what we return
 ) {
-
-  // parse coo into rows and cols (I think this could be somehow optimized)
-  // int rows[NUM_PE][ENTRIES_PER_PE];
-  // int cols[NUM_PE][ENTRIES_PER_PE];
-  // for (int i = 0; i < ENTRIES_PER_PE; i++){
-  //   rows[i] = (coo[i] >> 16) & 0x0000FFFF;
-  //   cols[i] = (coo[i] & 0x0000FFFF);
-  // }
 
   // set all the elements in visited to 1 
   // since we will use as mask to eliminate elements already visited
@@ -103,7 +153,8 @@ extern "C" void bfs (
   // do many iterations
   for (int i = 0; i < SIZE; i++){
 
-    spmv(coo, frontier, new_frontier, row_nnz);
+    spmv(pe_data0, pe_data1, pe_data2, pe_data3, pe_data4, pe_data5, pe_data6,
+         pe_data7, frontier, new_frontier, pe_counter);
 
     // mark visited nodes
     for (int j = 0; j < SIZE; j++){
