@@ -1,9 +1,13 @@
 #include "bfs.hpp"
 #include "hls_stream.h"
 
+#ifndef BFS_SIZE
+#define BFS_SIZE 16
+#endif
+
 void pe (
   hls::stream<int> &coo,
-  int in_buf[SIZE],
+  int in_buf[BFS_SIZE],
   int out_buf[ROWS_PER_PE],
   int bound,
   int pe_id
@@ -27,27 +31,27 @@ void pe (
 }
 
 void spmv_xcel (
-  int pe_data0[SIZE],
-  int pe_data1[SIZE],
-  int pe_data2[SIZE],
-  int pe_data3[SIZE],
-  int pe_data4[SIZE],
-  int pe_data5[SIZE],
-  int pe_data6[SIZE],
-  int pe_data7[SIZE],
-  int in_vec[SIZE],
-  int out_vec[SIZE],
+  int pe_data0[BFS_SIZE],
+  int pe_data1[BFS_SIZE],
+  int pe_data2[BFS_SIZE],
+  int pe_data3[BFS_SIZE],
+  int pe_data4[BFS_SIZE],
+  int pe_data5[BFS_SIZE],
+  int pe_data6[BFS_SIZE],
+  int pe_data7[BFS_SIZE],
+  int in_vec[BFS_SIZE],
+  int out_vec[BFS_SIZE],
   int pe_counter[NUM_PE]
 ) {
 
-  for (int i = 0; i < SIZE; i++){
+  for (int i = 0; i < BFS_SIZE; i++){
     out_vec[i] = 0;
   }
   
   #pragma HLS dataflow
 
   // each PE has a local copy of the input vector
-  int vecbuf[NUM_PE][SIZE];
+  int vecbuf[NUM_PE][BFS_SIZE];
   #pragma HLS array_partition variable=vecbuf dim=1
 
   // FIFOs for writing to each PE
@@ -67,7 +71,7 @@ void spmv_xcel (
   #pragma HLS array_partition variable=resbuf dim=1
 
   // write to each vecbuf
-  for (int i = 0; i < SIZE; i++) {
+  for (int i = 0; i < BFS_SIZE; i++) {
     for (int j = 0; j < NUM_PE; j++) {
       vecbuf[j][i] = in_vec[i];
     }
@@ -115,7 +119,7 @@ void spmv_xcel (
     int pe_id = i;
     for (int j = 0; j < ROWS_PER_PE; j++) {
       int global_row = pe_id + j * NUM_PE;
-      if (global_row < SIZE) { // just in case we set NUM_PE > SIZE (but i doubt it will happen)
+      if (global_row < BFS_SIZE) { // just in case we set NUM_PE > BFS_SIZE (but i doubt it will happen)
         out_vec[global_row] += resbuf[i][j];
       }
     }
@@ -123,57 +127,57 @@ void spmv_xcel (
 }
 
 extern "C" void bfs_xcel (
-    int pe_data0[SIZE],
-    int pe_data1[SIZE],
-    int pe_data2[SIZE],
-    int pe_data3[SIZE],
-    int pe_data4[SIZE],
-    int pe_data5[SIZE],
-    int pe_data6[SIZE],
-    int pe_data7[SIZE],
+    int pe_data0[BFS_SIZE],
+    int pe_data1[BFS_SIZE],
+    int pe_data2[BFS_SIZE],
+    int pe_data3[BFS_SIZE],
+    int pe_data4[BFS_SIZE],
+    int pe_data5[BFS_SIZE],
+    int pe_data6[BFS_SIZE],
+    int pe_data7[BFS_SIZE],
     int pe_counter[NUM_PE],
-    int last_frontier[SIZE] // what we return
+    int last_frontier[BFS_SIZE] // what we return
 ) {
 
   // set all the elements in visited to 1 
   // since we will use as mask to eliminate elements already visited
-  int visited[SIZE];
-  for (int i = 0; i < SIZE; i++){
+  int visited[BFS_SIZE];
+  for (int i = 0; i < BFS_SIZE; i++){
     visited[i] = 1;
   }
 
   // start node is set to node 0
-  int frontier[SIZE];
-  for (int i = 0; i < SIZE; i++){ // not sure how they get initialized, so doing like this
+  int frontier[BFS_SIZE];
+  for (int i = 0; i < BFS_SIZE; i++){ // not sure how they get initialized, so doing like this
     if (i == 0) frontier[i] = 1; 
     else frontier[i] = 0;
   }
 
   // new frontier initialized to 0
-  int new_frontier[SIZE];
-  for (int i = 0; i < SIZE; i++){
+  int new_frontier[BFS_SIZE];
+  for (int i = 0; i < BFS_SIZE; i++){
     new_frontier[i] = 0;
   }
 
   // do many iterations
-  for (int i = 0; i < SIZE; i++){
+  for (int i = 0; i < BFS_SIZE; i++){
 
     spmv_xcel(pe_data0, pe_data1, pe_data2, pe_data3, pe_data4, pe_data5, pe_data6,
          pe_data7, frontier, new_frontier, pe_counter);
 
     // mark visited nodes
-    for (int j = 0; j < SIZE; j++){
+    for (int j = 0; j < BFS_SIZE; j++){
       visited[j] = (visited[j] == 1) && (frontier[j] == 0);
     }
 
     // update frontier with new frontier
     // don't revisit visited nodes
-    for (int j = 0; j < SIZE; j++){
+    for (int j = 0; j < BFS_SIZE; j++){
       frontier[j] = (visited[j] == 1) && (new_frontier[j] == 1);
     }
 
     int cont = 0;
-    for (int j = 0; j < SIZE; j++){
+    for (int j = 0; j < BFS_SIZE; j++){
       cont += frontier[j];
     }
 
@@ -182,7 +186,7 @@ extern "C" void bfs_xcel (
     
   }
 
-  for (int i = 0; i < SIZE; i++){
+  for (int i = 0; i < BFS_SIZE; i++){
     last_frontier[i] = new_frontier[i];
   }
 

@@ -20,18 +20,20 @@ hls: run.tcl bfs.cpp bfs.hpp bfs-tb.cpp
 # to run with Vitis integrated software dev platform
 # ==============================================================================
 
+SIZE := 512
+
 # compile the host program; we are using -O3
 include opencl/opencl.mk # brings in opencl_CXXFLAGS and opencl_LDFLAGS
 XOCL_DIR := xcl2
 XOCL_SRC := $(XOCL_DIR)/xcl2.cpp
 xocl-host: xocl-host.cpp
-	g++ $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
+	g++ -DBFS_SIZE=$(SIZE) $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
 
 
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
 # VITIS_TARGET := hw
-VITIS_TARGET := sw_emu
+VITIS_TARGET := hw_emu
 
 # in MHz
 FREQUENCY := 100
@@ -49,11 +51,12 @@ KERNEL_OPTIMIZATION_LEVEL := -g
 
 # fixed configs or derived flags, no need to change in most cases
 PLATFORM := xilinx_u280_gen3x16_xdma_1_202211_1
-KERNEL_COMPILE_DIR = $(KERNEL_NAME).$(VITIS_TARGET).vpp.compile.prj
-KERNEL_LINK_DIR = $(KERNEL_NAME).$(VITIS_TARGET).vpp.link.prj
+KERNEL_COMPILE_DIR = $(KERNEL_NAME)_$(SIZE).$(VITIS_TARGET).vpp.compile.prj
+KERNEL_LINK_DIR = $(KERNEL_NAME)_$(SIZE).$(VITIS_TARGET).vpp.link.prj
 
 KERNEL_COMPILE_FLAGS += -I.
 KERNEL_COMPILE_FLAGS += -DVITIS
+KERNEL_COMPILE_FLAGS += -DBFS_SIZE=$(SIZE)
 KERNEL_COMPILE_FLAGS += -t $(VITIS_TARGET)
 KERNEL_COMPILE_FLAGS += --platform $(PLATFORM)
 KERNEL_COMPILE_FLAGS += -k $(KERNEL_NAME)
@@ -106,7 +109,7 @@ vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
 .PHONY: clean
 clean:
 	rm -rf .Xil
-	rm -rf bfs_xcel.*.prj
+	rm -rf bfs_xcel*.*.prj
 	rm -f *.log
 	rm -f xocl-host bfs-csim
 	rm -rf .run

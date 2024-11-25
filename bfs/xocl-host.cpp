@@ -8,6 +8,10 @@
 #include "xcl2.hpp"
 #define CHANNEL_NAME(n) n | XCL_MEM_TOPOLOGY
 
+#ifndef BFS_SIZE
+#define BFS_SIZE 16
+#endif
+
 // u280 memory channels
 const int HBM[32] = {
     CHANNEL_NAME(0),  CHANNEL_NAME(1),  CHANNEL_NAME(2),  CHANNEL_NAME(3),  CHANNEL_NAME(4),
@@ -99,13 +103,13 @@ int main(int argc, char** argv) {
 
     // prepare test data
     srand(0x12345678);
-    std::vector<int, aligned_allocator<int>> coo(SIZE), final_frontier(SIZE);
+    std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(BFS_SIZE);
     // int coo[SIZE];
 
     short rows, cols; 
-    for (int i = 0; i < SIZE; i++) {
-        rows = (short) (rand() % SIZE);
-        cols = (short) (rand() % SIZE);
+    for (int i = 0; i < BFS_SIZE; i++) {
+        rows = (short) (rand() % BFS_SIZE);
+        cols = (short) (rand() % BFS_SIZE);
         coo[i] = (rows << 16) | cols;
     }
     // std::cout << "reading data";
@@ -113,9 +117,9 @@ int main(int argc, char** argv) {
     // std::cout << "got data";
 
     // sort by rows
-    for (int i = 0; i < SIZE-1; i++) {
+    for (int i = 0; i < BFS_SIZE-1; i++) {
         int min_idx = i;
-        for (int j = i + 1; j < SIZE; j++) {
+        for (int j = i + 1; j < BFS_SIZE; j++) {
             short row_j = coo[j] >> 16;
             short row_min_idx = coo[min_idx] >> 16;
             if (row_j < row_min_idx) {
@@ -127,8 +131,8 @@ int main(int argc, char** argv) {
 
     std::cout << "sorted data\n";
 
-    bit final_frontier_exp[SIZE];
-    for (int i = 0; i < SIZE; i++) {
+    bit final_frontier_exp[BFS_SIZE];
+    for (int i = 0; i < BFS_SIZE; i++) {
         final_frontier_exp[i] = 0;
     }
     bfs(coo.data(), final_frontier_exp);
@@ -138,7 +142,7 @@ int main(int argc, char** argv) {
     // max it can be is all coo (SIZE number) go to one PE 
     // could do counting first and then create arrays based on count for each pe
     // int matrix_split[NUM_PE][SIZE]; 
-    std::vector<std::vector<int, aligned_allocator<int>>, aligned_allocator<std::vector<int, aligned_allocator<int>>>> matrix_split(NUM_PE, std::vector<int, aligned_allocator<int>>(SIZE));
+    std::vector<std::vector<int, aligned_allocator<int>>, aligned_allocator<std::vector<int, aligned_allocator<int>>>> matrix_split(NUM_PE, std::vector<int, aligned_allocator<int>>(BFS_SIZE));
 
     // use pe_counters to specify the number of nnz entries for each PE since
     // spmv goes through all coo coordinates it receives
@@ -149,7 +153,7 @@ int main(int argc, char** argv) {
 
     // now coo is sorted by row
     // do pre processing to split up rows by PE (cyclically)
-    for (int i = 0; i < SIZE; i++) {
+    for (int i = 0; i < BFS_SIZE; i++) {
         short row = coo[i] >> 16;
         short pe = row % NUM_PE;
         // std::cout << "pe " << pe << " got row " << row << "\n";
@@ -170,7 +174,7 @@ int main(int argc, char** argv) {
     cl::Buffer pe_data0_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &pe_data0_ext,
         &err
     );
@@ -190,7 +194,7 @@ int main(int argc, char** argv) {
     cl::Buffer pe_data1_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &pe_data1_ext,
         &err
     );
@@ -210,7 +214,7 @@ int main(int argc, char** argv) {
     cl::Buffer pe_data2_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &pe_data2_ext,
         &err
     );
@@ -230,7 +234,7 @@ int main(int argc, char** argv) {
     cl::Buffer pe_data3_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &pe_data3_ext,
         &err
     );
@@ -250,7 +254,7 @@ int main(int argc, char** argv) {
     cl::Buffer pe_data4_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &pe_data4_ext,
         &err
     );
@@ -270,7 +274,7 @@ int main(int argc, char** argv) {
     cl::Buffer pe_data5_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &pe_data5_ext,
         &err
     );
@@ -290,7 +294,7 @@ int main(int argc, char** argv) {
     cl::Buffer pe_data6_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &pe_data6_ext,
         &err
     );
@@ -310,7 +314,7 @@ int main(int argc, char** argv) {
     cl::Buffer pe_data7_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &pe_data7_ext,
         &err
     );
@@ -350,7 +354,7 @@ int main(int argc, char** argv) {
     cl::Buffer final_frontier_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
-        SIZE * sizeof(int),
+        BFS_SIZE * sizeof(int),
         &final_frontier_ext,
         &err
     );
@@ -470,13 +474,13 @@ int main(int argc, char** argv) {
 
     std::cout << "got results\n";
 
-    for (unsigned i = 0; i < SIZE; ++i) {
+    for (unsigned i = 0; i < BFS_SIZE; ++i) {
         std::cout << "    (row, col): (" << ((coo.data()[i] >> 16) & 0x0000FFFF) << ", " << (coo.data()[i] & 0x0000FFFF) << ") \n";
     }
 
     // check results
     bool pass = true;
-    for (unsigned i = 0; i < SIZE; ++i) {
+    for (unsigned i = 0; i < BFS_SIZE; ++i) {
         // std::cout << "    final level: " << i << ": " << final_frontier[i] << "\n";
         if (final_frontier[i] != final_frontier_exp[i]) {
             std::cerr << "[ERROR]: Result mismatch at index " << i << "!" << std::endl;
@@ -488,13 +492,13 @@ int main(int argc, char** argv) {
     }
 
     std::cout << "final_frontier:     [";
-    for (int i = 0; i < SIZE; i++) {
+    for (int i = 0; i < BFS_SIZE; i++) {
         std::cout << final_frontier[i] << ", ";
     }
     std::cout << "]\n";
 
     std::cout << "final_frontier_exp: [";
-    for (int i = 0; i < SIZE; i++) {
+    for (int i = 0; i < BFS_SIZE; i++) {
         std::cout << final_frontier_exp[i] << ", ";
     }
     std::cout << "]\n";
