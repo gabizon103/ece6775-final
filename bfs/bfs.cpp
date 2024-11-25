@@ -163,13 +163,13 @@ extern "C" void bfs_xcel (
 
     // mark visited nodes
     for (int j = 0; j < SIZE; j++){
-      visited[j] = visited[j] == 1 && (frontier[j] == 0);
+      visited[j] = (visited[j] == 1) && (frontier[j] == 0);
     }
 
     // update frontier with new frontier
     // don't revisit visited nodes
     for (int j = 0; j < SIZE; j++){
-      frontier[j] = visited[j] == 1 && new_frontier[j] == 1;
+      frontier[j] = (visited[j] == 1) && (new_frontier[j] == 1);
     }
 
     int cont = 0;

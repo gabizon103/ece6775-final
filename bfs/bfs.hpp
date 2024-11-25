@@ -73,7 +73,7 @@ void bfs (
     // update frontier with new frontier
     // don't revisit visited nodes
     for (int j = 0; j < SIZE; j++){
-      frontier[j] = visited[j] && new_frontier[j];
+      frontier[j] = (visited[j] == 1) && (new_frontier[j] == 1);
     }
 
     int cont = 0;
