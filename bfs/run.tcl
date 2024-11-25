@@ -5,7 +5,7 @@ set hls_prj bfs.hls.prj
 open_project ${hls_prj} -reset
 
 # Top function of the design is "dut"
-set_top bfs
+set_top bfs_xcel
 
 # Add design and testbench files
 add_files bfs.cpp -cflags "-std=c++11"

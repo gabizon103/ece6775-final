@@ -26,7 +26,7 @@ void pe (
   }
 }
 
-void spmv (
+void spmv_xcel (
   int pe_data0[SIZE],
   int pe_data1[SIZE],
   int pe_data2[SIZE],
@@ -122,7 +122,7 @@ void spmv (
   }
 }
 
-extern "C" void bfs (
+extern "C" void bfs_xcel (
     int pe_data0[SIZE],
     int pe_data1[SIZE],
     int pe_data2[SIZE],
@@ -158,18 +158,18 @@ extern "C" void bfs (
   // do many iterations
   for (int i = 0; i < SIZE; i++){
 
-    spmv(pe_data0, pe_data1, pe_data2, pe_data3, pe_data4, pe_data5, pe_data6,
+    spmv_xcel(pe_data0, pe_data1, pe_data2, pe_data3, pe_data4, pe_data5, pe_data6,
          pe_data7, frontier, new_frontier, pe_counter);
 
     // mark visited nodes
     for (int j = 0; j < SIZE; j++){
-      visited[j] = visited[j] && (frontier[j] == 0);
+      visited[j] = visited[j] == 1 && (frontier[j] == 0);
     }
 
     // update frontier with new frontier
     // don't revisit visited nodes
     for (int j = 0; j < SIZE; j++){
-      frontier[j] = visited[j] && new_frontier[j];
+      frontier[j] = visited[j] == 1 && new_frontier[j] == 1;
     }
 
     int cont = 0;

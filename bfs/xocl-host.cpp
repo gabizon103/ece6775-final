@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
 
     // obtain a kernel handler
     err = CL_SUCCESS;
-    cl::Kernel kernel(program, "bfs", &err);
+    cl::Kernel kernel(program, "bfs_xcel", &err);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to create kernel, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
@@ -100,6 +100,7 @@ int main(int argc, char** argv) {
     // prepare test data
     srand(0x12345678);
     std::vector<int> coo(SIZE), final_frontier(SIZE);
+    // int coo[SIZE];
 
     short rows, cols; 
     for (int i = 0; i < SIZE; i++) {
@@ -107,6 +108,9 @@ int main(int argc, char** argv) {
         cols = (short) (rand() % SIZE);
         coo[i] = (rows << 16) | cols;
     }
+    // std::cout << "reading data";
+    // read_data(coo);
+    // std::cout << "got data";
 
     // sort by rows
     for (int i = 0; i < SIZE-1; i++) {
@@ -120,6 +124,16 @@ int main(int argc, char** argv) {
             std::swap(coo[i], coo[min_idx]);
         }
     }
+
+    std::cout << "sorted data\n";
+
+    bit final_frontier_exp[SIZE];
+    for (int i = 0; i < SIZE; i++) {
+        final_frontier_exp[i] = 0;
+    }
+    bfs(coo.data(), final_frontier_exp);
+
+    std::cout << "called bfs\n";
 
     // max it can be is all coo (SIZE number) go to one PE 
     // could do counting first and then create arrays based on count for each pe
@@ -138,12 +152,13 @@ int main(int argc, char** argv) {
     for (int i = 0; i < SIZE; i++) {
         short row = coo[i] >> 16;
         short pe = row % NUM_PE;
+        std::cout << "pe " << pe << " got row " << row << "\n";
         int idx = pe_counter[pe];
         matrix_split[pe][idx] = coo[i];
         pe_counter[pe]++;
     }
 
-    // now we pas matrix_split into bfs
+    std::cout << "did cyclic blocking\n";
 
     // allocate device memory
     cl_mem_ext_ptr_t pe_data0_ext;
@@ -434,6 +449,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    std::cout << "queued kernel\n";
+
     // move results back to host
     err = command_q.enqueueMigrateMemObjects(
         {final_frontier_buf},
@@ -451,28 +468,42 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    std::cout << "got results\n";
+
     for (unsigned i = 0; i < SIZE; ++i) {
-        std::cout << "    (row, col): (" << ((coo[i] >> 16) & 0x0000FFFF) << ", " << (coo[i] & 0x0000FFFF) << ") \n";
+        std::cout << "    (row, col): (" << ((coo.data()[i] >> 16) & 0x0000FFFF) << ", " << (coo.data()[i] & 0x0000FFFF) << ") \n";
     }
 
     // check results
     bool pass = true;
     for (unsigned i = 0; i < SIZE; ++i) {
-        std::cout << "    final level: " << i << ": " << final_frontier[i] << "\n";
-        // if (final_frontier[i] != out_ref[i]) {
-        //     std::cerr << "[ERROR]: Result mismatch at index " << i << "!" << std::endl;
-        //     std::cerr << "  Expected: " << out_ref[i] << "\n";
-        //     std::cerr << "    Actual: " << final_frontier[i] << "\n";
-        //     pass = false;
-        //     break;
-        // }
+        // std::cout << "    final level: " << i << ": " << final_frontier[i] << "\n";
+        if (final_frontier[i] != final_frontier_exp[i]) {
+            std::cerr << "[ERROR]: Result mismatch at index " << i << "!" << std::endl;
+            std::cerr << "  Expected: " << final_frontier_exp[i] << "\n";
+            std::cerr << "    Actual: " << final_frontier[i] << "\n";
+            pass = false;
+            break;
+        }
     }
 
-    // if (pass) {
-    //     std::cout << "Test passed!" << std::endl;
-    // } else {
-    //     std::cout << "Test failed!" << std::endl;
-    // }
+    std::cout << "final_frontier:     [";
+    for (int i = 0; i < SIZE; i++) {
+        std::cout << final_frontier[i] << ", ";
+    }
+    std::cout << "]\n";
+
+    std::cout << "final_frontier_exp: [";
+    for (int i = 0; i < SIZE; i++) {
+        std::cout << final_frontier_exp[i] << ", ";
+    }
+    std::cout << "]\n";
+
+    if (pass) {
+        std::cout << "Test passed!" << std::endl;
+    } else {
+        std::cout << "Test failed!" << std::endl;
+    }
 
     return (pass) ? 0 : 1;
 }

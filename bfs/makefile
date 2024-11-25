@@ -36,7 +36,7 @@ VITIS_TARGET := sw_emu
 # in MHz
 FREQUENCY := 100
 # the name of top-level function
-KERNEL_NAME := bfs
+KERNEL_NAME := bfs_xcel
 # source cpp file
 KERNEL_SRC := bfs.cpp
 
