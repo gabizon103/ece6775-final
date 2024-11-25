@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
 
     // prepare test data
     srand(0x12345678);
-    std::vector<int> coo(SIZE), final_frontier(SIZE);
+    std::vector<int, aligned_allocator<int>> coo(SIZE), final_frontier(SIZE);
     // int coo[SIZE];
 
     short rows, cols; 
@@ -138,11 +138,11 @@ int main(int argc, char** argv) {
     // max it can be is all coo (SIZE number) go to one PE 
     // could do counting first and then create arrays based on count for each pe
     // int matrix_split[NUM_PE][SIZE]; 
-    std::vector<std::vector<int>> matrix_split(NUM_PE, std::vector<int>(SIZE));
+    std::vector<std::vector<int, aligned_allocator<int>>, aligned_allocator<std::vector<int, aligned_allocator<int>>>> matrix_split(NUM_PE, std::vector<int, aligned_allocator<int>>(SIZE));
 
     // use pe_counters to specify the number of nnz entries for each PE since
     // spmv goes through all coo coordinates it receives
-    std::vector<int> pe_counter(NUM_PE);
+    std::vector<int, aligned_allocator<int>> pe_counter(NUM_PE);
     for (int i = 0; i < NUM_PE; i++) {
         pe_counter[i] = 0;
     }
@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < SIZE; i++) {
         short row = coo[i] >> 16;
         short pe = row % NUM_PE;
-        std::cout << "pe " << pe << " got row " << row << "\n";
+        // std::cout << "pe " << pe << " got row " << row << "\n";
         int idx = pe_counter[pe];
         matrix_split[pe][idx] = coo[i];
         pe_counter[pe]++;

@@ -8,7 +8,7 @@
 
 typedef bool bit;
 
-constexpr int SIZE = 256;
+constexpr int SIZE = 512;
 constexpr int NUM_PE = 8;
 constexpr int ROWS_PER_PE = SIZE / NUM_PE;
 constexpr int ENTRIES_PER_PE = SIZE * ROWS_PER_PE;
