@@ -1,6 +1,9 @@
 # Project name
 set hls_prj bfs.hls.prj
 
+set BFS_SIZE 512
+set CFLAGS "-DBFS_SIZE=${BFS_SIZE} -std=c++11"
+
 # Open/reset the project
 open_project ${hls_prj} -reset
 
@@ -8,8 +11,8 @@ open_project ${hls_prj} -reset
 set_top bfs_xcel
 
 # Add design and testbench files
-add_files bfs.cpp -cflags "-std=c++11"
-add_files -tb bfs-tb.cpp -cflags "-std=c++11"
+add_files bfs.cpp -cflags $CFLAGS
+add_files -tb hls-tb.cpp -cflags $CFLAGS
 
 open_solution "solution1"
 # Use U280 device

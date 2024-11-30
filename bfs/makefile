@@ -2,8 +2,10 @@
 # to run as a C++ program
 # ==============================================================================
 HLS_INCLUDE := /opt/xilinx/2022.1/Vitis_HLS/2022.1/include
-bfs-csim: bfs.cpp bfs-tb.cpp
-	g++ bfs.cpp bfs-tb.cpp --std=c++11 -o $@ -I$(HLS_INCLUDE)
+SIZE := 512
+
+bfs-csim: bfs.cpp hls-tb.cpp bfs.hpp
+	g++ bfs.cpp hls-tb.cpp bfs.hpp --std=c++11 -o $@ -I$(HLS_INCLUDE) -DBFS_SIZE=$(SIZE) -I.
 
 .PHONY: csim
 csim: bfs-csim
@@ -13,14 +15,12 @@ csim: bfs-csim
 # to run traditional HLS flow
 # ==============================================================================
 .PHONY: hls
-hls: run.tcl bfs.cpp bfs.hpp bfs-tb.cpp
+hls: run.tcl bfs.cpp hls-tb.cpp
 	vitis_hls -f run.tcl
 
 # ==============================================================================
 # to run with Vitis integrated software dev platform
 # ==============================================================================
-
-SIZE := 512
 
 # compile the host program; we are using -O3
 include opencl/opencl.mk # brings in opencl_CXXFLAGS and opencl_LDFLAGS
