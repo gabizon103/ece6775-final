@@ -110,6 +110,7 @@ vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
 clean:
 	rm -rf .Xil
 	rm -rf bfs_xcel*.*.prj
+	rm -rf bfs*.*.prj
 	rm -f *.log
 	rm -f xocl-host bfs-csim
 	rm -rf .run

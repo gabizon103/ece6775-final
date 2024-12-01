@@ -108,6 +108,42 @@ void pe (
   }
 }
 
+void write_to_vecbuf(int vecbuf[NUM_PE][BFS_SIZE], int in_vec[BFS_SIZE]){
+
+  for (int i = 0; i < BFS_SIZE; i++) {
+    for (int j = 0; j < NUM_PE; j++) {
+      vecbuf[j][i] = in_vec[i];
+    }
+  }
+
+}
+
+void write_to_streams(hls::stream<int> &pe_coords, int pe_data[BFS_SIZE], int pe_counter){
+
+  for (int j = 0; j < pe_counter; j++) {
+    pe_coords.write(pe_data[j]);
+  }
+
+}
+
+void write_result_buf(int out_vec[BFS_SIZE], int resbuf[NUM_PE][ROWS_PER_PE]){
+
+  for (int i = 0; i < BFS_SIZE; i++){
+    out_vec[i] = 0;
+  }
+
+  for (int i = 0; i < NUM_PE; i++) {
+    int pe_id = i;
+    for (int j = 0; j < ROWS_PER_PE; j++) {
+      int global_row = pe_id + j * NUM_PE;
+      if (global_row < BFS_SIZE) { // just in case we set NUM_PE > BFS_SIZE (but i doubt it will happen)
+        out_vec[global_row] = resbuf[i][j];
+      }
+    }
+  }
+
+}
+
 void spmv_xcel (
   int pe_data0[BFS_SIZE],
   int pe_data1[BFS_SIZE],
@@ -121,10 +157,6 @@ void spmv_xcel (
   int out_vec[BFS_SIZE],
   int pe_counter[NUM_PE]
 ) {
-
-  for (int i = 0; i < BFS_SIZE; i++){
-    out_vec[i] = 0;
-  }
   
   #pragma HLS dataflow
 
@@ -149,40 +181,20 @@ void spmv_xcel (
   #pragma HLS array_partition variable=resbuf dim=1
 
   // write to each vecbuf
-  for (int i = 0; i < BFS_SIZE; i++) {
-    for (int j = 0; j < NUM_PE; j++) {
-      vecbuf[j][i] = in_vec[i];
-    }
-  }
+  write_to_vecbuf(vecbuf, in_vec);
 
   // write data in `coo` to `pe_coords`
-  for (int j = 0; j < pe_counter[0]; j++) {
-    pe_coords0.write(pe_data0[j]);
-  }
-  for (int j = 0; j < pe_counter[1]; j++) {
-    pe_coords1.write(pe_data1[j]);
-  }
-  for (int j = 0; j < pe_counter[2]; j++) {
-    pe_coords2.write(pe_data2[j]);
-  }
-  for (int j = 0; j < pe_counter[3]; j++) {
-    pe_coords3.write(pe_data3[j]);
-  }
-  for (int j = 0; j < pe_counter[4]; j++) {
-    pe_coords4.write(pe_data4[j]);
-  }
-  for (int j = 0; j < pe_counter[5]; j++) {
-    pe_coords5.write(pe_data5[j]);
-  }
-  for (int j = 0; j < pe_counter[6]; j++) {
-    pe_coords6.write(pe_data6[j]);
-  }
-  for (int j = 0; j < pe_counter[7]; j++) {
-    pe_coords7.write(pe_data7[j]);
-  }
+  #pragma HLS array_partition variable=pe_counter
+  write_to_streams(pe_coords0, pe_data0, pe_counter[0]);
+  write_to_streams(pe_coords1, pe_data1, pe_counter[1]);
+  write_to_streams(pe_coords2, pe_data2, pe_counter[2]);
+  write_to_streams(pe_coords3, pe_data3, pe_counter[3]);
+  write_to_streams(pe_coords4, pe_data4, pe_counter[4]);
+  write_to_streams(pe_coords5, pe_data5, pe_counter[5]);
+  write_to_streams(pe_coords6, pe_data6, pe_counter[6]);
+  write_to_streams(pe_coords7, pe_data7, pe_counter[7]);
 
   // spawn all the PEs
-  #pragma HLS dataflow
   pe(pe_coords0, vecbuf[0], resbuf[0], pe_counter[0], 0);
   pe(pe_coords1, vecbuf[1], resbuf[1], pe_counter[1], 1);
   pe(pe_coords2, vecbuf[2], resbuf[2], pe_counter[2], 2);
@@ -193,15 +205,7 @@ void spmv_xcel (
   pe(pe_coords7, vecbuf[7], resbuf[7], pe_counter[7], 7);
 
   // then, write from each PE's resbuf into output
-  for (int i = 0; i < NUM_PE; i++) {
-    int pe_id = i;
-    for (int j = 0; j < ROWS_PER_PE; j++) {
-      int global_row = pe_id + j * NUM_PE;
-      if (global_row < BFS_SIZE) { // just in case we set NUM_PE > BFS_SIZE (but i doubt it will happen)
-        out_vec[global_row] += resbuf[i][j];
-      }
-    }
-  }
+  write_result_buf(out_vec, resbuf);
 }
 
 #ifdef VITIS
