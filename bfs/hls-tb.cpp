@@ -18,6 +18,8 @@ int main(int argc, char** argv) {
     int coo[BFS_SIZE];
     int final_frontier[BFS_SIZE];
 
+    int num_hops = BFS_SIZE/2;
+
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
         rows = (short) (rand() % BFS_SIZE);
@@ -44,7 +46,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < BFS_SIZE; i++) {
         final_frontier_exp[i] = 0;
     }
-    bfs(coo, final_frontier_exp);
+    bfs(coo, final_frontier_exp, num_hops);
 
     int matrix_split[NUM_PE][BFS_SIZE];
     int pe_counter[NUM_PE];
@@ -75,7 +77,8 @@ int main(int argc, char** argv) {
       matrix_split[6],
       matrix_split[7],
       pe_counter,
-      final_frontier
+      final_frontier,
+      num_hops
     );
 
     // check results
