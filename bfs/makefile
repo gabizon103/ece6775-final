@@ -26,14 +26,14 @@ hls: run.tcl bfs.cpp hls-tb.cpp
 include opencl/opencl.mk # brings in opencl_CXXFLAGS and opencl_LDFLAGS
 XOCL_DIR := xcl2
 XOCL_SRC := $(XOCL_DIR)/xcl2.cpp
-xocl-host: xocl-host.cpp
+xocl-host: xocl-host.cpp bfs_sw.cpp
 	g++ -DBFS_SIZE=$(SIZE) $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
 
 
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
 # VITIS_TARGET := hw
-VITIS_TARGET := hw_emu
+VITIS_TARGET := sw_emu
 
 # in MHz
 FREQUENCY := 100

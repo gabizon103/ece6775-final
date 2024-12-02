@@ -106,6 +106,8 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(BFS_SIZE);
     // int coo[SIZE];
 
+    int num_hops = 8;
+
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
         rows = (short) (rand() % BFS_SIZE);
@@ -135,7 +137,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < BFS_SIZE; i++) {
         final_frontier_exp[i] = 0;
     }
-    bfs(coo.data(), final_frontier_exp);
+    bfs(coo.data(), final_frontier_exp, num_hops);
 
     std::cout << "called bfs\n";
 
@@ -434,7 +436,13 @@ int main(int argc, char** argv) {
     }
     err = kernel.setArg(9, final_frontier_buf);
     if (err != CL_SUCCESS) {
-        std::cerr << "[ERROR]: Failed to set kernel argument 1, exit!" << std::endl;
+        std::cerr << "[ERROR]: Failed to set kernel argument 9, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(10, num_hops);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 10, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
