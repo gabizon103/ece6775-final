@@ -100,6 +100,7 @@ void pe (
   int row_local, row_col;
   // bound is the number of entries this PE has to handle
   for (int i = 0; i < bound; i++) {
+    DO_PRAGMA(HLS loop_tripcount min=0 max=BFS_SIZE)
     row_col = coo.read();
     row_global = row_col >> 16;
     col = row_col & 0x0000FFFF;
@@ -121,12 +122,13 @@ void write_to_vecbuf(int vecbuf[NUM_PE][BFS_SIZE], int in_vec[BFS_SIZE]){
 void write_to_streams(hls::stream<int> &pe_coords, int pe_data[BFS_SIZE], int pe_counter){
 
   for (int j = 0; j < pe_counter; j++) {
+    DO_PRAGMA(HLS loop_tripcount min=0 max=BFS_SIZE)
     pe_coords.write(pe_data[j]);
   }
 
 }
 
-void write_result_buf(int out_vec[BFS_SIZE], int resbuf[NUM_PE][ROWS_PER_PE]){
+void write_out_vec(int out_vec[BFS_SIZE], int resbuf[NUM_PE][ROWS_PER_PE]){
 
   for (int i = 0; i < BFS_SIZE; i++){
     out_vec[i] = 0;
@@ -205,7 +207,7 @@ void spmv_xcel (
   pe(pe_coords7, vecbuf[7], resbuf[7], pe_counter[7], 7);
 
   // then, write from each PE's resbuf into output
-  write_result_buf(out_vec, resbuf);
+  write_out_vec(out_vec, resbuf);
 }
 
 #ifdef VITIS

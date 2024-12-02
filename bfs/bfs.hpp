@@ -9,6 +9,9 @@
 #define BFS_SIZE 16
 #endif
 
+#define PRAGMA_SUB(x) _Pragma (#x)
+#define DO_PRAGMA(x) PRAGMA_SUB(x)
+
 typedef bool bit;
 
 // constexpr int BFS_SIZE = 16;
