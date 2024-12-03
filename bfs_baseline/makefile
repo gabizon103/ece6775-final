@@ -2,7 +2,7 @@
 # to run as a C++ program
 # ==============================================================================
 HLS_INCLUDE := /opt/xilinx/2022.1/Vitis_HLS/2022.1/include
-SIZE := 4096
+SIZE := 512
 
 bfs-csim: bfs.cpp hls-tb.cpp bfs.hpp
 	g++ bfs.cpp hls-tb.cpp bfs.hpp --std=c++11 -o $@ -I$(HLS_INCLUDE) -DBFS_SIZE=$(SIZE) -I.
@@ -33,14 +33,14 @@ xocl-host: xocl-host.cpp bfs_sw.cpp
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
 # VITIS_TARGET := hw
-VITIS_TARGET := hw
+VITIS_TARGET := hw_emu
 
 # in MHz
 FREQUENCY := 100
 # the name of top-level function
-KERNEL_NAME := bfs_xcel
+KERNEL_NAME := bfs
 # source cpp file
-KERNEL_SRC := bfs.cpp
+KERNEL_SRC := bfs_sw.cpp
 
 # compile config not used in this example
 # KERNEL_COMPILE_CONFIG :=
@@ -51,8 +51,8 @@ KERNEL_OPTIMIZATION_LEVEL := -g
 
 # fixed configs or derived flags, no need to change in most cases
 PLATFORM := xilinx_u280_gen3x16_xdma_1_202211_1
-KERNEL_COMPILE_DIR = $(KERNEL_NAME)_$(SIZE).$(VITIS_TARGET).vpp.compile.prj
-KERNEL_LINK_DIR = $(KERNEL_NAME)_$(SIZE).$(VITIS_TARGET).vpp.link.prj
+KERNEL_COMPILE_DIR = $(KERNEL_NAME)_$(SIZE)_BASE.$(VITIS_TARGET).vpp.compile.prj
+KERNEL_LINK_DIR = $(KERNEL_NAME)_$(SIZE)_BASE.$(VITIS_TARGET).vpp.link.prj
 
 KERNEL_COMPILE_FLAGS += -I.
 KERNEL_COMPILE_FLAGS += -DVITIS
@@ -97,10 +97,11 @@ endif
 
 # phony targets to run compiled binaries
 .PHONY: vitis
-vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 # vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-# 	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+# 	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+# bottom one for emulation
+vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
+	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 
 # ==============================================================================
 # clean stuff

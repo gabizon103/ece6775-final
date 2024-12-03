@@ -31,6 +31,8 @@ void pe (
   }
 }
 
+
+
 void write_to_vecbuf(int vecbuf[NUM_PE][BFS_SIZE], int in_vec[BFS_SIZE]){
 
   for (int i = 0; i < BFS_SIZE; i++) {
@@ -66,6 +68,12 @@ void write_out_vec(int out_vec[BFS_SIZE], int resbuf[NUM_PE][ROWS_PER_PE]){
     }
   }
 
+}
+
+void copy_to_local_buffer( int data[BFS_SIZE], int data_buf[BFS_SIZE], int bound ){
+  for (int i = 0; i < bound; i++){
+    data_buf[i] = data[i];
+  }
 }
 
 void spmv_xcel (
@@ -163,7 +171,7 @@ extern "C" void bfs_xcel (
   int pe_data5_buf[BFS_SIZE];
   int pe_data6_buf[BFS_SIZE];
   int pe_data7_buf[BFS_SIZE];
-  
+
   copy_to_local_buffer(pe_counter, pe_counter_buf, NUM_PE);
   copy_to_local_buffer(pe_data0, pe_data0_buf, pe_counter[0]);
   copy_to_local_buffer(pe_data1, pe_data1_buf, pe_counter[1]);

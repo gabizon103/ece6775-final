@@ -4,7 +4,7 @@
 #include <cstring>
 
 #include "bfs.hpp"
-#include "utils.cpp"
+#include "timer.h"
 
 #include "xcl2.hpp"
 #define CHANNEL_NAME(n) n | XCL_MEM_TOPOLOGY
@@ -113,7 +113,19 @@ int main(int argc, char** argv) {
     for (int i = 0; i < BFS_SIZE; i++) {
         coo[i] = 0;
     }
-    read_data(coo);
+
+    bit final_frontier_exp[BFS_SIZE];
+    for (int i = 0; i < BFS_SIZE; i++) {
+        final_frontier_exp[i] = 0;
+    }
+    bfs(coo.data(), final_frontier_exp, num_hops);
+
+    // std::cout << "reading data";
+    // read_data(coo);
+    // std::cout << "got data";
+
+    Timer timer("bfs_xcel on FPGA");
+    timer.start();
 
     // sort by rows
     for (int i = 0; i < BFS_SIZE-1; i++) {
@@ -127,16 +139,6 @@ int main(int argc, char** argv) {
             std::swap(coo[i], coo[min_idx]);
         }
     }
-
-    std::cout << "sorted data\n";
-
-    bit final_frontier_exp[BFS_SIZE];
-    for (int i = 0; i < BFS_SIZE; i++) {
-        final_frontier_exp[i] = 0;
-    }
-    bfs(coo, final_frontier_exp, num_hops);
-
-    std::cout << "called bfs\n";
 
     // max it can be is all coo (SIZE number) go to one PE 
     // could do counting first and then create arrays based on count for each pe
@@ -495,6 +497,8 @@ int main(int argc, char** argv) {
             break;
         }
     }
+
+    timer.stop();
 
     std::cout << "final_frontier:     [";
     for (int i = 0; i < BFS_SIZE; i++) {
