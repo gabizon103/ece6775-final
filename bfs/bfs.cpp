@@ -132,6 +132,12 @@ void spmv_xcel (
   write_out_vec(out_vec, resbuf);
 }
 
+void copy_to_local_buffer( int data[BFS_SIZE], int data_buf[BFS_SIZE], int bound ){
+  for (int i = 0; i < bound; i++){
+    data_buf[i] = data[i];
+  }
+}
+
 #ifdef VITIS
 
 extern "C" void bfs_xcel (
@@ -147,6 +153,26 @@ extern "C" void bfs_xcel (
     int last_frontier[BFS_SIZE], // what we return
     int num_hops
 ) {
+
+  int pe_counter_buf[NUM_PE];
+  int pe_data0_buf[BFS_SIZE];
+  int pe_data1_buf[BFS_SIZE];
+  int pe_data2_buf[BFS_SIZE];
+  int pe_data3_buf[BFS_SIZE];
+  int pe_data4_buf[BFS_SIZE];
+  int pe_data5_buf[BFS_SIZE];
+  int pe_data6_buf[BFS_SIZE];
+  int pe_data7_buf[BFS_SIZE];
+  
+  copy_to_local_buffer(pe_counter, pe_counter_buf, NUM_PE);
+  copy_to_local_buffer(pe_data0, pe_data0_buf, pe_counter[0]);
+  copy_to_local_buffer(pe_data1, pe_data1_buf, pe_counter[1]);
+  copy_to_local_buffer(pe_data2, pe_data2_buf, pe_counter[2]);
+  copy_to_local_buffer(pe_data3, pe_data3_buf, pe_counter[3]);
+  copy_to_local_buffer(pe_data4, pe_data4_buf, pe_counter[4]);
+  copy_to_local_buffer(pe_data5, pe_data5_buf, pe_counter[5]);
+  copy_to_local_buffer(pe_data6, pe_data6_buf, pe_counter[6]);
+  copy_to_local_buffer(pe_data7, pe_data7_buf, pe_counter[7]);
 
   // set all the elements in visited to 1 
   // since we will use as mask to eliminate elements already visited
@@ -171,8 +197,8 @@ extern "C" void bfs_xcel (
   // do many iterations
   for (int i = 0; i < num_hops; i++){
 
-    spmv_xcel(pe_data0, pe_data1, pe_data2, pe_data3, pe_data4, pe_data5, pe_data6,
-         pe_data7, frontier, new_frontier, pe_counter);
+    spmv_xcel(pe_data0_buf, pe_data1_buf, pe_data2_buf, pe_data3_buf, pe_data4_buf, pe_data5_buf, pe_data6_buf,
+         pe_data7_buf, frontier, new_frontier, pe_counter_copy);
 
     // mark visited nodes
     for (int j = 0; j < BFS_SIZE; j++){
