@@ -27,7 +27,7 @@ void pe (
     row_global = row_col >> 16;
     col = row_col & 0x0000FFFF;
     row_local = (row_global - pe_id) / NUM_PE;
-    out_buf[row_local] += in_buf[col];
+    out_buf[row_local] |= in_buf[col];
   }
 }
 
@@ -198,7 +198,7 @@ extern "C" void bfs_xcel (
   for (int i = 0; i < num_hops; i++){
 
     spmv_xcel(pe_data0_buf, pe_data1_buf, pe_data2_buf, pe_data3_buf, pe_data4_buf, pe_data5_buf, pe_data6_buf,
-         pe_data7_buf, frontier, new_frontier, pe_counter_copy);
+         pe_data7_buf, frontier, new_frontier, pe_counter_buf);
 
     // mark visited nodes
     for (int j = 0; j < BFS_SIZE; j++){

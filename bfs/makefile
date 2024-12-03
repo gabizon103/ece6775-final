@@ -2,7 +2,7 @@
 # to run as a C++ program
 # ==============================================================================
 HLS_INCLUDE := /opt/xilinx/2022.1/Vitis_HLS/2022.1/include
-SIZE := 512
+SIZE := 4096
 
 bfs-csim: bfs.cpp hls-tb.cpp bfs.hpp
 	g++ bfs.cpp hls-tb.cpp bfs.hpp --std=c++11 -o $@ -I$(HLS_INCLUDE) -DBFS_SIZE=$(SIZE) -I.

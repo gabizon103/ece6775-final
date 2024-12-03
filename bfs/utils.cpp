@@ -12,24 +12,16 @@ void read_data(int coo[BFS_SIZE]) {
     infile >> k;
     infile >> k;
     for (int i = 0; i < BFS_SIZE; i++) {
-      short row, col;
-      for (int j = 0; j < 3; j++) {
-        std::string s;
-        float f = 0.0;
-        float d;
-        if (j == 0) {
-          infile >> row;
-        //   rows[i] = row;
-        } else if (j == 1) {
-          infile >> col;
-        //   cols[i] = col;
-        } else {
-          infile >> s;
-        //   data[i] = std::stof(s);
-        }
+      int row, col;
+      float value;
+      
+      if (!(infile >> row >> col >> value)) { // pad it to make it power of 2
+          row = 0;
+          col = 0;
       }
-      int row_shifted = row << 16;
-      coo[i] = row_shifted | col;
+
+      coo[i] = (row << 16) | (col & 0xFFFF);
     }
+  
   }
 }

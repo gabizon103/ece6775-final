@@ -4,6 +4,7 @@
 #include <cstring>
 
 #include "bfs.hpp"
+#include "utils.cpp"
 
 #include "xcl2.hpp"
 #define CHANNEL_NAME(n) n | XCL_MEM_TOPOLOGY
@@ -103,20 +104,16 @@ int main(int argc, char** argv) {
 
     // prepare test data
     srand(0x12345678);
-    std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(BFS_SIZE);
-    // int coo[SIZE];
+    std::vector<int, aligned_allocator<int>> final_frontier(BFS_SIZE);
+    int coo[BFS_SIZE];
 
-    int num_hops = 8;
+    int num_hops = 2;
 
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
-        rows = (short) (rand() % BFS_SIZE);
-        cols = (short) (rand() % BFS_SIZE);
-        coo[i] = (rows << 16) | cols;
+        coo[i] = 0;
     }
-    // std::cout << "reading data";
-    // read_data(coo);
-    // std::cout << "got data";
+    read_data(coo);
 
     // sort by rows
     for (int i = 0; i < BFS_SIZE-1; i++) {
@@ -137,7 +134,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < BFS_SIZE; i++) {
         final_frontier_exp[i] = 0;
     }
-    bfs(coo.data(), final_frontier_exp, num_hops);
+    bfs(coo, final_frontier_exp, num_hops);
 
     std::cout << "called bfs\n";
 
@@ -483,7 +480,7 @@ int main(int argc, char** argv) {
     std::cout << "got results\n";
 
     for (unsigned i = 0; i < BFS_SIZE; ++i) {
-        std::cout << "    (row, col): (" << ((coo.data()[i] >> 16) & 0x0000FFFF) << ", " << (coo.data()[i] & 0x0000FFFF) << ") \n";
+        std::cout << "    (row, col): (" << ((coo[i] >> 16) & 0x0000FFFF) << ", " << (coo[i] & 0x0000FFFF) << ") \n";
     }
 
     // check results
