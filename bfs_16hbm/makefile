@@ -36,7 +36,7 @@ xocl-host: xocl-host.cpp bfs_sw.cpp
 VITIS_TARGET := hw_emu
 
 # in MHz
-FREQUENCY := 100
+FREQUENCY := 200
 # the name of top-level function
 KERNEL_NAME := bfs_xcel
 # source cpp file
