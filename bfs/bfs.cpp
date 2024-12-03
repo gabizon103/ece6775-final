@@ -140,12 +140,6 @@ void spmv_xcel (
   write_out_vec(out_vec, resbuf);
 }
 
-void copy_to_local_buffer( int data[BFS_SIZE], int data_buf[BFS_SIZE], int bound ){
-  for (int i = 0; i < bound; i++){
-    data_buf[i] = data[i];
-  }
-}
-
 #ifdef VITIS
 
 extern "C" void bfs_xcel (

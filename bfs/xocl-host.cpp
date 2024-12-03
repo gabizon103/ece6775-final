@@ -5,6 +5,7 @@
 
 #include "bfs.hpp"
 #include "timer.h"
+#include "utils.cpp"
 
 #include "xcl2.hpp"
 #define CHANNEL_NAME(n) n | XCL_MEM_TOPOLOGY
@@ -118,11 +119,9 @@ int main(int argc, char** argv) {
     for (int i = 0; i < BFS_SIZE; i++) {
         final_frontier_exp[i] = 0;
     }
-    bfs(coo.data(), final_frontier_exp, num_hops);
 
-    // std::cout << "reading data";
-    // read_data(coo);
-    // std::cout << "got data";
+    read_data(coo);
+    bfs(coo, final_frontier_exp, num_hops);
 
     Timer timer("bfs_xcel on FPGA");
     timer.start();
