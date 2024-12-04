@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> final_frontier(BFS_SIZE);
     int coo[BFS_SIZE];
 
-    int num_hops = 2;
+    int num_hops = 100;
 
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
         pe_counter[pe]++;
     }
 
-    std::cout << "did cyclic blocking\n";
+    // std::cout << "did cyclic blocking\n";
 
     // allocate device memory
     cl_mem_ext_ptr_t pe_data0_ext;
@@ -670,7 +670,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    std::cout << "queued kernel\n";
+    // std::cout << "queued kernel\n";
 
     // move results back to host
     err = command_q.enqueueMigrateMemObjects(
@@ -688,6 +688,8 @@ int main(int argc, char** argv) {
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
+
+    timer.stop();
 
     std::cout << "got results\n";
 
@@ -707,8 +709,6 @@ int main(int argc, char** argv) {
             break;
         }
     }
-
-    timer.stop();
 
     std::cout << "final_frontier:     [";
     for (int i = 0; i < BFS_SIZE; i++) {
