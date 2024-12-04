@@ -33,21 +33,21 @@ xocl-host: xocl-host.cpp bfs_sw.cpp
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
 # VITIS_TARGET := hw
-VITIS_TARGET := sw_emu
+VITIS_TARGET := hw_emu
 
 # in MHz
-FREQUENCY := 100
+FREQUENCY := 200
 # the name of top-level function
-KERNEL_NAME := bfs
+KERNEL_NAME := bfs_xcel
 # source cpp file
-KERNEL_SRC := bfs_sw.cpp
+KERNEL_SRC := bfs.cpp
 
 # compile config not used in this example
 # KERNEL_COMPILE_CONFIG :=
 KERNEL_LINK_CONFIG := bfs.cfg
 
 # use -g for debugging, otherwise use -O3
-KERNEL_OPTIMIZATION_LEVEL := -g
+KERNEL_OPTIMIZATION_LEVEL := -O3
 
 # fixed configs or derived flags, no need to change in most cases
 PLATFORM := xilinx_u280_gen3x16_xdma_1_202211_1
