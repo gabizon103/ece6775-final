@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> final_frontier(BFS_SIZE);
     int coo[BFS_SIZE];
 
-    int num_hops = 2;
+    int num_hops = 4;
 
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
@@ -689,6 +689,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    timer.stop();
+
     std::cout << "got results\n";
 
     for (unsigned i = 0; i < BFS_SIZE; ++i) {
@@ -707,8 +709,6 @@ int main(int argc, char** argv) {
             break;
         }
     }
-
-    timer.stop();
 
     std::cout << "final_frontier:     [";
     for (int i = 0; i < BFS_SIZE; i++) {
