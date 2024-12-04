@@ -4,6 +4,8 @@
 #include <cstring>
 
 #include "bfs.hpp"
+#include "utils.cpp"
+#include "timer.h"
 
 #include "xcl2.hpp"
 #define CHANNEL_NAME(n) n | XCL_MEM_TOPOLOGY
@@ -106,32 +108,38 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(BFS_SIZE);
     // int coo[SIZE];
 
-    int num_hops = 8;
+    int num_hops = 4;
+
+    // short rows, cols; 
+    // for (int i = 0; i < BFS_SIZE; i++) {
+    //     rows = (short) (rand() % BFS_SIZE);
+    //     cols = (short) (rand() % BFS_SIZE);
+    //     coo[i] = (rows << 16) | cols;
+    // }
 
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
-        rows = (short) (rand() % BFS_SIZE);
-        cols = (short) (rand() % BFS_SIZE);
-        coo[i] = (rows << 16) | cols;
+        coo[i] = 0;
     }
+
     // std::cout << "reading data";
-    // read_data(coo);
+    read_data(coo.data());
     // std::cout << "got data";
 
-    // sort by rows
-    for (int i = 0; i < BFS_SIZE-1; i++) {
-        int min_idx = i;
-        for (int j = i + 1; j < BFS_SIZE; j++) {
-            short row_j = coo[j] >> 16;
-            short row_min_idx = coo[min_idx] >> 16;
-            if (row_j < row_min_idx) {
-                min_idx = j;
-            }
-            std::swap(coo[i], coo[min_idx]);
-        }
-    }
+    // // sort by rows
+    // for (int i = 0; i < BFS_SIZE-1; i++) {
+    //     int min_idx = i;
+    //     for (int j = i + 1; j < BFS_SIZE; j++) {
+    //         short row_j = coo[j] >> 16;
+    //         short row_min_idx = coo[min_idx] >> 16;
+    //         if (row_j < row_min_idx) {
+    //             min_idx = j;
+    //         }
+    //         std::swap(coo[i], coo[min_idx]);
+    //     }
+    // }
 
-    std::cout << "sorted data\n";
+    // std::cout << "sorted data\n";
 
     bit final_frontier_exp[BFS_SIZE];
     for (int i = 0; i < BFS_SIZE; i++) {
@@ -140,6 +148,8 @@ int main(int argc, char** argv) {
     bfs(coo.data(), final_frontier_exp, num_hops);
 
     std::cout << "called bfs\n";
+    Timer timer("bfs_xcel on FPGA");
+    timer.start();
 
     cl_mem_ext_ptr_t coo_data_ext;
     coo_data_ext.flags = HBM[0];
@@ -227,7 +237,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    std::cout << "queued kernel\n";
+    // std::cout << "queued kernel\n";
 
     // move results back to host
     err = command_q.enqueueMigrateMemObjects(
@@ -245,6 +255,8 @@ int main(int argc, char** argv) {
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
+
+    timer.stop();
 
     std::cout << "got results\n";
 

@@ -2,7 +2,7 @@
 # to run as a C++ program
 # ==============================================================================
 HLS_INCLUDE := /opt/xilinx/2022.1/Vitis_HLS/2022.1/include
-SIZE := 512
+SIZE := 4096
 
 bfs-csim: bfs.cpp hls-tb.cpp bfs.hpp
 	g++ bfs.cpp hls-tb.cpp bfs.hpp --std=c++11 -o $@ -I$(HLS_INCLUDE) -DBFS_SIZE=$(SIZE) -I.
@@ -33,7 +33,7 @@ xocl-host: xocl-host.cpp bfs_sw.cpp
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
 # VITIS_TARGET := hw
-VITIS_TARGET := hw_emu
+VITIS_TARGET := sw_emu
 
 # in MHz
 FREQUENCY := 100
@@ -97,11 +97,14 @@ endif
 
 # phony targets to run compiled binaries
 .PHONY: vitis
-# vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-# 	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
-# bottom one for emulation
+
+$(info ************ EMU BUILD ************)
 vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
 	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+	  
+# $(info ************ HW BUILD ************)
+# vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
+# 	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 
 # ==============================================================================
 # clean stuff
