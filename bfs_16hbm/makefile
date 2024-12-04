@@ -33,7 +33,7 @@ xocl-host: xocl-host.cpp bfs_sw.cpp
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
 # VITIS_TARGET := hw
-VITIS_TARGET := hw_emu
+VITIS_TARGET := hw
 
 # in MHz
 FREQUENCY := 200
@@ -97,10 +97,10 @@ endif
 
 # phony targets to run compiled binaries
 .PHONY: vitis
-# vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-# 	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+# vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
+# 	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 
 # ==============================================================================
 # clean stuff
