@@ -2,6 +2,7 @@
 #include <cstdio>
 #include "hls_stream.h"
 #include "bfs.hpp"
+#include "bfs_sw.cpp"
 
 #ifndef BFS_SIZE
 #define BFS_SIZE 16
@@ -16,7 +17,7 @@ int main(int argc, char** argv) {
     // std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(BFS_SIZE);
     // int coo[SIZE];
     int coo[BFS_SIZE];
-    int final_frontier[BFS_SIZE];
+    int final_frontier[VEC_SIZE];
 
     int num_hops = BFS_SIZE/2;
 
@@ -42,8 +43,8 @@ int main(int argc, char** argv) {
 
     std::cout << "sorted data\n";
 
-    bit final_frontier_exp[BFS_SIZE];
-    for (int i = 0; i < BFS_SIZE; i++) {
+    bit final_frontier_exp[VEC_SIZE];
+    for (int i = 0; i < VEC_SIZE; i++) {
         final_frontier_exp[i] = 0;
     }
     bfs(coo, final_frontier_exp, num_hops);
@@ -83,7 +84,7 @@ int main(int argc, char** argv) {
 
     // check results
     bool pass = true;
-    for (unsigned i = 0; i < BFS_SIZE; ++i) {
+    for (unsigned i = 0; i < VEC_SIZE; ++i) {
         // std::cout << "    final level: " << i << ": " << final_frontier[i] << "\n";
         if (final_frontier[i] != final_frontier_exp[i]) {
             std::cerr << "[ERROR]: Result mismatch at index " << i << "!" << std::endl;

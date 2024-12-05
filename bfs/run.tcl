@@ -1,8 +1,9 @@
 # Project name
-set hls_prj bfs.hls.prj
+set hls_prj bfs_new.hls.prj
 
 set BFS_SIZE 512
-set CFLAGS "-DBFS_SIZE=${BFS_SIZE} -std=c++11"
+set VEC_SIZE 128
+set CFLAGS "-DBFS_SIZE=${BFS_SIZE} -DVEC_SIZE=${VEC_SIZE} -std=c++11"
 
 # Open/reset the project
 open_project ${hls_prj} -reset
@@ -21,7 +22,7 @@ set_part {xcu280-fsvh2892-2L-E}
 # Target clock period is 10ns
 create_clock -period 10
 
-# csim_design
+csim_design
 
 csynth_design
 

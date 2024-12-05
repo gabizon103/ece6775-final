@@ -6,12 +6,12 @@
 
 void spmv (
   int coo[BFS_SIZE],
-  bit in_vec[BFS_SIZE],
-  bit out_vec[BFS_SIZE]
+  bit in_vec[VEC_SIZE],
+  bit out_vec[VEC_SIZE]
 ) {
   short row, col;
   int row_col;
-  for (int i = 0; i < BFS_SIZE; i++) {
+  for (int i = 0; i < VEC_SIZE; i++) {
     out_vec[i] = 0;
   }
   for (int i = 0; i < BFS_SIZE; i++) {
@@ -24,31 +24,34 @@ void spmv (
 
 void bfs (
   int coo[BFS_SIZE],
-  bit last_frontier[BFS_SIZE],
+  bit last_frontier[VEC_SIZE],
   int num_hops
 ) {
   // set all the elements in visited to 1 
   // since we will use as mask to eliminate elements already visited
-  int visited[BFS_SIZE];
-  for (int i = 0; i < BFS_SIZE; i++){
+  int visited[VEC_SIZE];
+  for (int i = 0; i < VEC_SIZE; i++){
     visited[i] = 1;
   }
 
   // start node is set to node 0
   short row, col;
   int row_col;
-  bit frontier[BFS_SIZE];
+  bit frontier[VEC_SIZE];
   for (int i = 0; i < BFS_SIZE; i++){ // not sure how they get initialized, so doing like this
     row_col = coo[i];
     row = row_col >> 16;
     col = row_col & 0x0000FFFF;
+  }
+
+  for (int i = 0; i < VEC_SIZE; i++){
     if (i == 0) frontier[i] = 1; 
     else frontier[i] = 0;
   }
 
   // new frontier initialized to 0
-  bit new_frontier[BFS_SIZE];
-  for (int i = 0; i < BFS_SIZE; i++){
+  bit new_frontier[VEC_SIZE];
+  for (int i = 0; i < VEC_SIZE; i++){
     new_frontier[i] = 0;
   }
 
@@ -58,13 +61,13 @@ void bfs (
     spmv(coo, frontier, new_frontier);
 
     // mark visited nodes
-    for (int j = 0; j < BFS_SIZE; j++){
+    for (int j = 0; j < VEC_SIZE; j++){
       visited[j] = (visited[j] == 1) && (frontier[j] == 0);
     }
 
     // update frontier with new frontier
     // don't revisit visited nodes
-    for (int j = 0; j < BFS_SIZE; j++){
+    for (int j = 0; j < VEC_SIZE; j++){
       frontier[j] = (visited[j] == 1) && (new_frontier[j] == 1);
     }
 
@@ -78,7 +81,7 @@ void bfs (
     
   }
 
-  for (int i = 0; i < BFS_SIZE; i++){
+  for (int i = 0; i < VEC_SIZE; i++){
     last_frontier[i] = new_frontier[i];
   }
 }

@@ -14,6 +14,10 @@
 #define BFS_SIZE 16
 #endif
 
+#ifndef VEC_SIZE
+#define VEC_SIZE 16
+#endif
+
 // u280 memory channels
 const int HBM[32] = {
     CHANNEL_NAME(0),  CHANNEL_NAME(1),  CHANNEL_NAME(2),  CHANNEL_NAME(3),  CHANNEL_NAME(4),
@@ -37,6 +41,8 @@ int main(int argc, char** argv) {
         return 1;
     }
     const std::string xclbin = argv[1];
+
+    std::cout << "vecsize: " << VEC_SIZE;
 
     // first see if we are in hw
     const char* emulation_mode = getenv("XCL_EMULATION_MODE");
@@ -105,18 +111,18 @@ int main(int argc, char** argv) {
 
     // prepare test data
     srand(0x12345678);
-    std::vector<int, aligned_allocator<int>> final_frontier(BFS_SIZE);
+    std::vector<int, aligned_allocator<int>> final_frontier(VEC_SIZE);
     int coo[BFS_SIZE];
 
-    int num_hops = 4;
+    int num_hops = 10;
 
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
         coo[i] = 0;
     }
 
-    bit final_frontier_exp[BFS_SIZE];
-    for (int i = 0; i < BFS_SIZE; i++) {
+    bit final_frontier_exp[VEC_SIZE];
+    for (int i = 0; i < VEC_SIZE; i++) {
         final_frontier_exp[i] = 0;
     }
 
@@ -354,7 +360,7 @@ int main(int argc, char** argv) {
     cl::Buffer final_frontier_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
-        BFS_SIZE * sizeof(int),
+        VEC_SIZE * sizeof(int),
         &final_frontier_ext,
         &err
     );
@@ -488,7 +494,7 @@ int main(int argc, char** argv) {
 
     // check results
     bool pass = true;
-    for (unsigned i = 0; i < BFS_SIZE; ++i) {
+    for (unsigned i = 0; i < VEC_SIZE; ++i) {
         // std::cout << "    final level: " << i << ": " << final_frontier[i] << "\n";
         if (final_frontier[i] != final_frontier_exp[i]) {
             std::cerr << "[ERROR]: Result mismatch at index " << i << "!" << std::endl;
@@ -500,13 +506,13 @@ int main(int argc, char** argv) {
     }
 
     std::cout << "final_frontier:     [";
-    for (int i = 0; i < BFS_SIZE; i++) {
+    for (int i = 0; i < VEC_SIZE; i++) {
         std::cout << final_frontier[i] << ", ";
     }
     std::cout << "]\n";
 
     std::cout << "final_frontier_exp: [";
-    for (int i = 0; i < BFS_SIZE; i++) {
+    for (int i = 0; i < VEC_SIZE; i++) {
         std::cout << final_frontier_exp[i] << ", ";
     }
     std::cout << "]\n";

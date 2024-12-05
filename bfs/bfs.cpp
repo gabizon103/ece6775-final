@@ -7,22 +7,24 @@
 
 void pe (
   hls::stream<int> &coo,
-  int in_buf[BFS_SIZE],
+  int in_buf[VEC_SIZE],
   int out_buf[ROWS_PER_PE],
   int bound,
   int pe_id
 ) {
 
   // initialize to 0 just in case
-  for (int i = 0; i < ROWS_PER_PE; i++) {
+  PE_ZERO_LOOP: for (int i = 0; i < ROWS_PER_PE; i++) {
+    #pragma HLS pipeline
     out_buf[i] = 0;
   }
 
   short row_global, col;
   int row_local, row_col;
   // bound is the number of entries this PE has to handle
-  for (int i = 0; i < bound; i++) {
-    DO_PRAGMA(HLS loop_tripcount min=0 max=BFS_SIZE)
+  PE_BOUND_LOOP: for (int i = 0; i < bound; i++) {
+    #pragma HLS pipeline
+    // DO_PRAGMA(HLS loop_tripcount min=0 max=BFS_SIZE)
     row_col = coo.read();
     row_global = row_col >> 16;
     col = row_col & 0x0000FFFF;
@@ -33,10 +35,11 @@ void pe (
 
 
 
-void write_to_vecbuf(int vecbuf[NUM_PE][BFS_SIZE], int in_vec[BFS_SIZE]){
+void write_to_vecbuf(int vecbuf[NUM_PE][VEC_SIZE], int in_vec[VEC_SIZE]){
 
-  for (int i = 0; i < BFS_SIZE; i++) {
-    for (int j = 0; j < NUM_PE; j++) {
+  WRITE_TO_VECBUF_OUTER: for (int i = 0; i < VEC_SIZE; i++) {
+    #pragma HLS pipeline
+    WRITE_TO_VECBUF_INNER: for (int j = 0; j < NUM_PE; j++) {
       vecbuf[j][i] = in_vec[i];
     }
   }
@@ -45,20 +48,23 @@ void write_to_vecbuf(int vecbuf[NUM_PE][BFS_SIZE], int in_vec[BFS_SIZE]){
 
 void write_to_streams(hls::stream<int> &pe_coords, int pe_data[BFS_SIZE], int pe_counter){
 
-  for (int j = 0; j < pe_counter; j++) {
-    DO_PRAGMA(HLS loop_tripcount min=0 max=BFS_SIZE)
+  WRITE_TO_STREAM_LOOP: for (int j = 0; j < pe_counter; j++) {
+    #pragma HLS pipeline
+    // DO_PRAGMA(HLS loop_tripcount min=0 max=BFS_SIZE)
     pe_coords.write(pe_data[j]);
   }
 
 }
 
-void write_out_vec(int out_vec[BFS_SIZE], int resbuf[NUM_PE][ROWS_PER_PE]){
+void write_out_vec(int out_vec[VEC_SIZE], int resbuf[NUM_PE][ROWS_PER_PE]){
 
-  for (int i = 0; i < BFS_SIZE; i++){
+  WRITE_OUT_VEC_ZERO_LOOP: for (int i = 0; i < VEC_SIZE; i++){
+    #pragma HLS pipeline
     out_vec[i] = 0;
   }
 
-  for (int i = 0; i < NUM_PE; i++) {
+  WRITE_OUT_VEC_COPY_LOOP: for (int i = 0; i < NUM_PE; i++) {
+    #pragma HLS pipeline
     int pe_id = i;
     for (int j = 0; j < ROWS_PER_PE; j++) {
       int global_row = pe_id + j * NUM_PE;
@@ -70,12 +76,6 @@ void write_out_vec(int out_vec[BFS_SIZE], int resbuf[NUM_PE][ROWS_PER_PE]){
 
 }
 
-void copy_to_local_buffer( int data[BFS_SIZE], int data_buf[BFS_SIZE], int bound ){
-  for (int i = 0; i < bound; i++){
-    data_buf[i] = data[i];
-  }
-}
-
 void spmv_xcel (
   int pe_data0[BFS_SIZE],
   int pe_data1[BFS_SIZE],
@@ -85,15 +85,15 @@ void spmv_xcel (
   int pe_data5[BFS_SIZE],
   int pe_data6[BFS_SIZE],
   int pe_data7[BFS_SIZE],
-  int in_vec[BFS_SIZE],
-  int out_vec[BFS_SIZE],
+  int in_vec[VEC_SIZE],
+  int out_vec[VEC_SIZE],
   int pe_counter[NUM_PE]
 ) {
   
   #pragma HLS dataflow
 
   // each PE has a local copy of the input vector
-  int vecbuf[NUM_PE][BFS_SIZE];
+  int vecbuf[NUM_PE][VEC_SIZE];
   #pragma HLS array_partition variable=vecbuf dim=1
 
   // FIFOs for writing to each PE
@@ -152,7 +152,7 @@ extern "C" void bfs_xcel (
     int pe_data6[BFS_SIZE],
     int pe_data7[BFS_SIZE],
     int pe_counter[NUM_PE],
-    int last_frontier[BFS_SIZE], // what we return
+    int last_frontier[VEC_SIZE], // what we return
     int num_hops
 ) {
 
@@ -181,25 +181,27 @@ extern "C" void bfs_xcel (
   #pragma HLS INTERFACE s_axilite port=return bundle=control
 
   int pe_counter_buf[NUM_PE];
-  copy_to_local_buffer(pe_counter, pe_counter_buf, NUM_PE);
+  for (int i = 0; i < NUM_PE; i++){
+    pe_counter_buf[i] = pe_counter[i];
+  }
 
   // set all the elements in visited to 1 
   // since we will use as mask to eliminate elements already visited
-  int visited[BFS_SIZE];
-  for (int i = 0; i < BFS_SIZE; i++){
+  int visited[VEC_SIZE];
+  for (int i = 0; i < VEC_SIZE; i++){
     visited[i] = 1;
   }
 
   // start node is set to node 0
-  int frontier[BFS_SIZE];
-  for (int i = 0; i < BFS_SIZE; i++){ // not sure how they get initialized, so doing like this
+  int frontier[VEC_SIZE];
+  for (int i = 0; i < VEC_SIZE; i++){ // not sure how they get initialized, so doing like this
     if (i == 0) frontier[i] = 1; 
     else frontier[i] = 0;
   }
 
   // new frontier initialized to 0
-  int new_frontier[BFS_SIZE];
-  for (int i = 0; i < BFS_SIZE; i++){
+  int new_frontier[VEC_SIZE];
+  for (int i = 0; i < VEC_SIZE; i++){
     new_frontier[i] = 0;
   }
 
@@ -210,13 +212,13 @@ extern "C" void bfs_xcel (
          pe_data7, frontier, new_frontier, pe_counter_buf);
 
     // mark visited nodes
-    for (int j = 0; j < BFS_SIZE; j++){
+    for (int j = 0; j < VEC_SIZE; j++){
       visited[j] = (visited[j] == 1) && (frontier[j] == 0);
     }
 
     // update frontier with new frontier
     // don't revisit visited nodes
-    for (int j = 0; j < BFS_SIZE; j++){
+    for (int j = 0; j < VEC_SIZE; j++){
       frontier[j] = (visited[j] == 1) && (new_frontier[j] == 1);
     }
 
@@ -230,7 +232,7 @@ extern "C" void bfs_xcel (
     
   }
 
-  for (int i = 0; i < BFS_SIZE; i++){
+  for (int i = 0; i < VEC_SIZE; i++){
     last_frontier[i] = new_frontier[i];
   }
 
@@ -248,27 +250,27 @@ void bfs_xcel (
     int pe_data6[BFS_SIZE],
     int pe_data7[BFS_SIZE],
     int pe_counter[NUM_PE],
-    int last_frontier[BFS_SIZE], // what we return
+    int last_frontier[VEC_SIZE], // what we return
     int num_hops
 ) {
 
   // set all the elements in visited to 1 
   // since we will use as mask to eliminate elements already visited
-  int visited[BFS_SIZE];
-  for (int i = 0; i < BFS_SIZE; i++){
+  int visited[VEC_SIZE];
+  for (int i = 0; i < VEC_SIZE; i++){
     visited[i] = 1;
   }
 
   // start node is set to node 0
-  int frontier[BFS_SIZE];
-  for (int i = 0; i < BFS_SIZE; i++){ // not sure how they get initialized, so doing like this
+  int frontier[VEC_SIZE];
+  for (int i = 0; i < VEC_SIZE; i++){ // not sure how they get initialized, so doing like this
     if (i == 0) frontier[i] = 1; 
     else frontier[i] = 0;
   }
 
   // new frontier initialized to 0
-  int new_frontier[BFS_SIZE];
-  for (int i = 0; i < BFS_SIZE; i++){
+  int new_frontier[VEC_SIZE];
+  for (int i = 0; i < VEC_SIZE; i++){
     new_frontier[i] = 0;
   }
 
@@ -279,13 +281,13 @@ void bfs_xcel (
          pe_data7, frontier, new_frontier, pe_counter);
 
     // mark visited nodes
-    for (int j = 0; j < BFS_SIZE; j++){
+    for (int j = 0; j < VEC_SIZE; j++){
       visited[j] = (visited[j] == 1) && (frontier[j] == 0);
     }
 
     // update frontier with new frontier
     // don't revisit visited nodes
-    for (int j = 0; j < BFS_SIZE; j++){
+    for (int j = 0; j < VEC_SIZE; j++){
       frontier[j] = (visited[j] == 1) && (new_frontier[j] == 1);
     }
 
@@ -299,7 +301,7 @@ void bfs_xcel (
     
   }
 
-  for (int i = 0; i < BFS_SIZE; i++){
+  for (int i = 0; i < VEC_SIZE; i++){
     last_frontier[i] = new_frontier[i];
   }
 

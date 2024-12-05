@@ -2,10 +2,11 @@
 # to run as a C++ program
 # ==============================================================================
 HLS_INCLUDE := /opt/xilinx/2022.1/Vitis_HLS/2022.1/include
-SIZE := 4096
+BFS_SIZE := 4096
+VEC_SIZE := 1024
 
 bfs-csim: bfs.cpp hls-tb.cpp bfs.hpp
-	g++ bfs.cpp hls-tb.cpp bfs.hpp --std=c++11 -o $@ -I$(HLS_INCLUDE) -DBFS_SIZE=$(SIZE) -I.
+	g++ bfs.cpp hls-tb.cpp bfs.hpp --std=c++11 -o $@ -I$(HLS_INCLUDE) -DBFS_SIZE=$(BFS_SIZE) -DVEC_SIZE=$(VEC_SIZE) -I.
 
 .PHONY: csim
 csim: bfs-csim
@@ -27,13 +28,13 @@ include opencl/opencl.mk # brings in opencl_CXXFLAGS and opencl_LDFLAGS
 XOCL_DIR := xcl2
 XOCL_SRC := $(XOCL_DIR)/xcl2.cpp
 xocl-host: xocl-host.cpp bfs_sw.cpp
-	g++ -DBFS_SIZE=$(SIZE) $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
+	g++ -DBFS_SIZE=$(BFS_SIZE) -DVEC_SIZE=$(VEC_SIZE) $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
 
 
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
 VITIS_TARGET := hw
-# VITIS_TARGET := sw_emu
+# VITIS_TARGET := hw_emu
 
 # in MHz
 FREQUENCY := 200
@@ -51,12 +52,13 @@ KERNEL_OPTIMIZATION_LEVEL := -O3
 
 # fixed configs or derived flags, no need to change in most cases
 PLATFORM := xilinx_u280_gen3x16_xdma_1_202211_1
-KERNEL_COMPILE_DIR = $(KERNEL_NAME)_$(SIZE)_$(FREQUENCY)Mhz.$(VITIS_TARGET).vpp.compile.prj
-KERNEL_LINK_DIR = $(KERNEL_NAME)_$(SIZE)_$(FREQUENCY)Mhz.$(VITIS_TARGET).vpp.link.prj
+KERNEL_COMPILE_DIR = $(KERNEL_NAME)_$(BFS_SIZE)_$(FREQUENCY)Mhz_new.$(VITIS_TARGET).vpp.compile.prj
+KERNEL_LINK_DIR = $(KERNEL_NAME)_$(BFS_SIZE)_$(FREQUENCY)Mhz_new.$(VITIS_TARGET).vpp.link.prj
 
 KERNEL_COMPILE_FLAGS += -I.
 KERNEL_COMPILE_FLAGS += -DVITIS
-KERNEL_COMPILE_FLAGS += -DBFS_SIZE=$(SIZE)
+KERNEL_COMPILE_FLAGS += -DBFS_SIZE=$(BFS_SIZE)
+KERNEL_COMPILE_FLAGS += -DVEC_SIZE=$(VEC_SIZE)
 KERNEL_COMPILE_FLAGS += -t $(VITIS_TARGET)
 KERNEL_COMPILE_FLAGS += --platform $(PLATFORM)
 KERNEL_COMPILE_FLAGS += -k $(KERNEL_NAME)
@@ -113,8 +115,8 @@ vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
 .PHONY: clean
 clean:
 	rm -rf .Xil
-	rm -rf bfs_xcel*.*.prj
-	rm -rf bfs*.*.prj
+#	rm -rf bfs_xcel*.*.prj
+#	rm -rf bfs*.*.prj
 	rm -f *.log
 	rm -f xocl-host bfs-csim
 	rm -rf .run

@@ -4,7 +4,7 @@
 #include <fstream>
 
 void read_data(int coo[BFS_SIZE]) {
-  std::ifstream infile("data/1138_bus.dat");
+  std::ifstream infile("../data/young4c.dat");
 
   if (infile.is_open()) {
     int k;
@@ -14,9 +14,9 @@ void read_data(int coo[BFS_SIZE]) {
     infile >> k;
     for (int i = 0; i < BFS_SIZE; i++) {
       int row, col;
-      float value;
+      float value, extra;
       
-      if (!(infile >> row >> col >> value)) { // pad it to make it power of 2
+      if (!(infile >> row >> col >> value >> extra)) { // pad it to make it power of 2
           row = 0;
           col = 0;
       }

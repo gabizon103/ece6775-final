@@ -3,6 +3,7 @@
 # ==============================================================================
 HLS_INCLUDE := /opt/xilinx/2022.1/Vitis_HLS/2022.1/include
 SIZE := 4096
+VEC_SIZE := 1024
 
 bfs-csim: bfs.cpp hls-tb.cpp bfs.hpp
 	g++ bfs.cpp hls-tb.cpp bfs.hpp --std=c++11 -o $@ -I$(HLS_INCLUDE) -DBFS_SIZE=$(SIZE) -I.
@@ -27,13 +28,13 @@ include opencl/opencl.mk # brings in opencl_CXXFLAGS and opencl_LDFLAGS
 XOCL_DIR := xcl2
 XOCL_SRC := $(XOCL_DIR)/xcl2.cpp
 xocl-host: xocl-host.cpp bfs_sw.cpp
-	g++ -DBFS_SIZE=$(SIZE) $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
+	g++ -DBFS_SIZE=$(SIZE) -DVEC_SIZE=$(VEC_SIZE) $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
 
 
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
+# VITIS_TARGET := hw
 VITIS_TARGET := hw
-# VITIS_TARGET := hw_emu
 
 # in MHz
 FREQUENCY := 200
@@ -57,6 +58,7 @@ KERNEL_LINK_DIR = $(KERNEL_NAME)_$(SIZE)_BASE.$(VITIS_TARGET).vpp.link.prj
 KERNEL_COMPILE_FLAGS += -I.
 KERNEL_COMPILE_FLAGS += -DVITIS
 KERNEL_COMPILE_FLAGS += -DBFS_SIZE=$(SIZE)
+KERNEL_COMPILE_FLAGS += -DVEC_SIZE=$(VEC_SIZE)
 KERNEL_COMPILE_FLAGS += -t $(VITIS_TARGET)
 KERNEL_COMPILE_FLAGS += --platform $(PLATFORM)
 KERNEL_COMPILE_FLAGS += -k $(KERNEL_NAME)
@@ -113,8 +115,8 @@ vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
 .PHONY: clean
 clean:
 	rm -rf .Xil
-	rm -rf bfs_xcel*.*.prj
-	rm -rf bfs*.*.prj
+#	rm -rf bfs_xcel*.*.prj
+#	rm -rf bfs*.*.prj
 	rm -f *.log
 	rm -f xocl-host bfs-csim
 	rm -rf .run

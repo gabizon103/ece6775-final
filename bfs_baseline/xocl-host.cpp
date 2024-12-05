@@ -105,10 +105,13 @@ int main(int argc, char** argv) {
 
     // prepare test data
     srand(0x12345678);
-    std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(BFS_SIZE);
+    int coo_copy[BFS_SIZE];
+    std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(VEC_SIZE);
     // int coo[SIZE];
 
-    int num_hops = 5;
+    int num_hops = 10;
+
+    std::cout << "vecsize: " << VEC_SIZE;
 
     // short rows, cols; 
     // for (int i = 0; i < BFS_SIZE; i++) {
@@ -120,10 +123,18 @@ int main(int argc, char** argv) {
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
         coo[i] = 0;
+        coo_copy[i] = 0;
     }
 
     // std::cout << "reading data";
-    read_data(coo.data());
+    read_data(coo_copy);
+    for(int i=0; i < 100; i++){
+        printf("coo[%d] = %d\n", i, coo_copy[i]);
+    }
+
+    for (int i = 0; i < BFS_SIZE; i++) {
+        coo[i] = coo_copy[i];
+    }
     // std::cout << "got data";
 
     // // sort by rows
@@ -141,8 +152,8 @@ int main(int argc, char** argv) {
 
     // std::cout << "sorted data\n";
 
-    bit final_frontier_exp[BFS_SIZE];
-    for (int i = 0; i < BFS_SIZE; i++) {
+    bit final_frontier_exp[VEC_SIZE];
+    for (int i = 0; i < VEC_SIZE; i++) {
         final_frontier_exp[i] = 0;
     }
     bfs(coo.data(), final_frontier_exp, num_hops);
@@ -180,7 +191,7 @@ int main(int argc, char** argv) {
     cl::Buffer final_frontier_buf(
         context,
         CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
-        BFS_SIZE * sizeof(int),
+        VEC_SIZE * sizeof(int),
         &final_frontier_ext,
         &err
     );
@@ -260,13 +271,13 @@ int main(int argc, char** argv) {
 
     std::cout << "got results\n";
 
-    for (unsigned i = 0; i < BFS_SIZE; ++i) {
-        std::cout << "    (row, col): (" << ((coo.data()[i] >> 16) & 0x0000FFFF) << ", " << (coo.data()[i] & 0x0000FFFF) << ") \n";
-    }
+    // for (unsigned i = 0; i < BFS_SIZE; ++i) {
+    //     std::cout << "    (row, col): (" << ((coo.data()[i] >> 16) & 0x0000FFFF) << ", " << (coo.data()[i] & 0x0000FFFF) << ") \n";
+    // }
 
     // check results
     bool pass = true;
-    for (unsigned i = 0; i < BFS_SIZE; ++i) {
+    for (unsigned i = 0; i < VEC_SIZE; ++i) {
         // std::cout << "    final level: " << i << ": " << final_frontier[i] << "\n";
         if (final_frontier[i] != final_frontier_exp[i]) {
             std::cerr << "[ERROR]: Result mismatch at index " << i << "!" << std::endl;
@@ -278,13 +289,13 @@ int main(int argc, char** argv) {
     }
 
     std::cout << "final_frontier:     [";
-    for (int i = 0; i < BFS_SIZE; i++) {
+    for (int i = 0; i < VEC_SIZE; i++) {
         std::cout << final_frontier[i] << ", ";
     }
     std::cout << "]\n";
 
     std::cout << "final_frontier_exp: [";
-    for (int i = 0; i < BFS_SIZE; i++) {
+    for (int i = 0; i < VEC_SIZE; i++) {
         std::cout << final_frontier_exp[i] << ", ";
     }
     std::cout << "]\n";
