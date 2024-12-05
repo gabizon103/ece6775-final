@@ -1,3 +1,4 @@
+#include "hls_stream.h"
 #include "bfs.hpp"
 
 #ifndef BFS_SIZE
@@ -6,8 +7,8 @@
 
 void spmv (
   int coo[BFS_SIZE],
-  bit in_vec[BFS_SIZE],
-  bit out_vec[BFS_SIZE]
+  int in_vec[BFS_SIZE],
+  int out_vec[BFS_SIZE]
 ) {
   short row, col;
   int row_col;
@@ -18,13 +19,14 @@ void spmv (
     row_col = coo[i];
     row = (row_col >> 16) & 0x0000FFFF;
     col = row_col & 0x0000FFFF;
-    out_vec[row] += in_vec[col];
+    out_vec[row] |= in_vec[col];
   }
 }
 
-void bfs (
+
+extern "C" void bfs_xcel (
   int coo[BFS_SIZE],
-  bit last_frontier[BFS_SIZE],
+  int last_frontier[BFS_SIZE],
   int num_hops
 ) {
   // set all the elements in visited to 1 
@@ -37,7 +39,7 @@ void bfs (
   // start node is set to node 0
   short row, col;
   int row_col;
-  bit frontier[BFS_SIZE];
+  int frontier[BFS_SIZE];
   for (int i = 0; i < BFS_SIZE; i++){ // not sure how they get initialized, so doing like this
     row_col = coo[i];
     row = row_col >> 16;
@@ -47,7 +49,7 @@ void bfs (
   }
 
   // new frontier initialized to 0
-  bit new_frontier[BFS_SIZE];
+  int new_frontier[BFS_SIZE];
   for (int i = 0; i < BFS_SIZE; i++){
     new_frontier[i] = 0;
   }

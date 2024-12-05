@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
 
     // obtain a kernel handler
     err = CL_SUCCESS;
-    cl::Kernel kernel(program, "bfs", &err);
+    cl::Kernel kernel(program, "bfs_xcel", &err);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to create kernel, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(BFS_SIZE);
     // int coo[SIZE];
 
-    int num_hops = 4;
+    int num_hops = 5;
 
     // short rows, cols; 
     // for (int i = 0; i < BFS_SIZE; i++) {

@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> final_frontier(BFS_SIZE);
     int coo[BFS_SIZE];
 
-    int num_hops = 100;
+    int num_hops = 4;
 
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
