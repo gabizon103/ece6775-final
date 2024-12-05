@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
         pe_counter[pe]++;
     }
 
-    std::cout << "did cyclic blocking\n";
+    // std::cout << "did cyclic blocking\n";
 
     // allocate device memory
     cl_mem_ext_ptr_t pe_data0_ext;
@@ -459,7 +459,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    std::cout << "queued kernel\n";
+    // std::cout << "queued kernel\n";
 
     // move results back to host
     err = command_q.enqueueMigrateMemObjects(
@@ -477,14 +477,14 @@ int main(int argc, char** argv) {
         std::cerr << "         Error code: " << err << std::endl;
         return 1;
     }
-
+  
     timer.stop();
 
     std::cout << "got results\n";
 
-    for (unsigned i = 0; i < BFS_SIZE; ++i) {
-        std::cout << "    (row, col): (" << ((coo[i] >> 16) & 0x0000FFFF) << ", " << (coo[i] & 0x0000FFFF) << ") \n";
-    }
+    // for (unsigned i = 0; i < BFS_SIZE; ++i) {
+    //     std::cout << "    (row, col): (" << ((coo[i] >> 16) & 0x0000FFFF) << ", " << (coo[i] & 0x0000FFFF) << ") \n";
+    // }
 
     // check results
     bool pass = true;

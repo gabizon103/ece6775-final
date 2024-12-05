@@ -32,8 +32,8 @@ xocl-host: xocl-host.cpp bfs_sw.cpp
 
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
-# VITIS_TARGET := hw
 VITIS_TARGET := hw
+# VITIS_TARGET := sw_emu
 
 # in MHz
 FREQUENCY := 200
