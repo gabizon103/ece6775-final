@@ -16,12 +16,12 @@ typedef bool bit;
 
 // constexpr int BFS_SIZE = 16;
 constexpr int NUM_PE = 8;
-constexpr int ROWS_PER_PE = BFS_SIZE / NUM_PE;
+constexpr int ROWS_PER_PE = VEC_SIZE / NUM_PE;
 constexpr int ENTRIES_PER_PE = BFS_SIZE * ROWS_PER_PE;
 
 void bfs (
   int coo[BFS_SIZE],
-  bit last_frontier[BFS_SIZE],
+  bit last_frontier[VEC_SIZE],
   int num_hops
 );
 
@@ -35,7 +35,7 @@ extern "C" void bfs_xcel (
   int pe_data6[BFS_SIZE],
   int pe_data7[BFS_SIZE],
   int pe_counter[NUM_PE],
-  int last_frontier[BFS_SIZE], // what we return
+  int last_frontier[VEC_SIZE], // what we return
   int num_hops
 );
 
