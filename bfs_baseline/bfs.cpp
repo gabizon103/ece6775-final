@@ -19,7 +19,7 @@ void spmv (
     row_col = coo[i];
     row = (row_col >> 16) & 0x0000FFFF;
     col = row_col & 0x0000FFFF;
-    out_vec[row] += in_vec[col];
+    out_vec[row] |= in_vec[col];
   }
 }
 
