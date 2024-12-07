@@ -109,9 +109,7 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> coo(BFS_SIZE), final_frontier(VEC_SIZE);
     // int coo[SIZE];
 
-    int num_hops = 10;
-
-    std::cout << "vecsize: " << VEC_SIZE;
+    int num_hops = 256;
 
     // short rows, cols; 
     // for (int i = 0; i < BFS_SIZE; i++) {
@@ -128,9 +126,6 @@ int main(int argc, char** argv) {
 
     // std::cout << "reading data";
     read_data(coo_copy);
-    for(int i=0; i < 100; i++){
-        printf("coo[%d] = %d\n", i, coo_copy[i]);
-    }
 
     for (int i = 0; i < BFS_SIZE; i++) {
         coo[i] = coo_copy[i];
@@ -158,7 +153,6 @@ int main(int argc, char** argv) {
     }
     bfs(coo.data(), final_frontier_exp, num_hops);
 
-    std::cout << "called bfs\n";
     Timer timer("bfs_xcel on FPGA");
     timer.start();
 
@@ -269,8 +263,6 @@ int main(int argc, char** argv) {
 
     timer.stop();
 
-    std::cout << "got results\n";
-
     // for (unsigned i = 0; i < BFS_SIZE; ++i) {
     //     std::cout << "    (row, col): (" << ((coo.data()[i] >> 16) & 0x0000FFFF) << ", " << (coo.data()[i] & 0x0000FFFF) << ") \n";
     // }
@@ -288,23 +280,23 @@ int main(int argc, char** argv) {
         }
     }
 
-    std::cout << "final_frontier:     [";
-    for (int i = 0; i < VEC_SIZE; i++) {
-        std::cout << final_frontier[i] << ", ";
-    }
-    std::cout << "]\n";
+    // std::cout << "final_frontier:     [";
+    // for (int i = 0; i < VEC_SIZE; i++) {
+    //     std::cout << final_frontier[i] << ", ";
+    // }
+    // std::cout << "]\n";
 
-    std::cout << "final_frontier_exp: [";
-    for (int i = 0; i < VEC_SIZE; i++) {
-        std::cout << final_frontier_exp[i] << ", ";
-    }
-    std::cout << "]\n";
+    // std::cout << "final_frontier_exp: [";
+    // for (int i = 0; i < VEC_SIZE; i++) {
+    //     std::cout << final_frontier_exp[i] << ", ";
+    // }
+    // std::cout << "]\n";
 
-    if (pass) {
-        std::cout << "Test passed!" << std::endl;
-    } else {
-        std::cout << "Test failed!" << std::endl;
-    }
+    // if (pass) {
+    //     std::cout << "Test passed!" << std::endl;
+    // } else {
+    //     std::cout << "Test failed!" << std::endl;
+    // }
 
     return (pass) ? 0 : 1;
 }

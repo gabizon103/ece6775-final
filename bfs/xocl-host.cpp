@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> final_frontier(VEC_SIZE);
     int coo[BFS_SIZE];
 
-    int num_hops = 10;
+    int num_hops = 256;
 
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
@@ -129,8 +129,10 @@ int main(int argc, char** argv) {
     read_data(coo);
     bfs(coo, final_frontier_exp, num_hops);
 
-    Timer timer("bfs_xcel on FPGA");
-    timer.start();
+    Timer timer_fpga("bfs_xcel on FPGA");
+    Timer timer_preproc("bfs_xcel preprocessing");
+
+    timer_preproc.start();
 
     // sort by rows
     for (int i = 0; i < BFS_SIZE-1; i++) {
@@ -144,7 +146,6 @@ int main(int argc, char** argv) {
             std::swap(coo[i], coo[min_idx]);
         }
     }
-
     // max it can be is all coo (SIZE number) go to one PE 
     // could do counting first and then create arrays based on count for each pe
     // int matrix_split[NUM_PE][SIZE]; 
@@ -167,6 +168,9 @@ int main(int argc, char** argv) {
         matrix_split[pe][idx] = coo[i];
         pe_counter[pe]++;
     }
+
+    timer_preproc.stop();
+    timer_fpga.start();
 
     // std::cout << "did cyclic blocking\n";
 
@@ -484,7 +488,7 @@ int main(int argc, char** argv) {
         return 1;
     }
   
-    timer.stop();
+    timer_fpga.stop();
 
     std::cout << "got results\n";
 
@@ -505,23 +509,23 @@ int main(int argc, char** argv) {
         }
     }
 
-    std::cout << "final_frontier:     [";
-    for (int i = 0; i < VEC_SIZE; i++) {
-        std::cout << final_frontier[i] << ", ";
-    }
-    std::cout << "]\n";
+    // std::cout << "final_frontier:     [";
+    // for (int i = 0; i < VEC_SIZE; i++) {
+    //     std::cout << final_frontier[i] << ", ";
+    // }
+    // std::cout << "]\n";
 
-    std::cout << "final_frontier_exp: [";
-    for (int i = 0; i < VEC_SIZE; i++) {
-        std::cout << final_frontier_exp[i] << ", ";
-    }
-    std::cout << "]\n";
+    // std::cout << "final_frontier_exp: [";
+    // for (int i = 0; i < VEC_SIZE; i++) {
+    //     std::cout << final_frontier_exp[i] << ", ";
+    // }
+    // std::cout << "]\n";
 
-    if (pass) {
-        std::cout << "Test passed!" << std::endl;
-    } else {
-        std::cout << "Test failed!" << std::endl;
-    }
+    // if (pass) {
+    //     std::cout << "Test passed!" << std::endl;
+    // } else {
+    //     std::cout << "Test failed!" << std::endl;
+    // }
 
     return (pass) ? 0 : 1;
 }
