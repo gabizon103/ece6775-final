@@ -48,12 +48,12 @@ KERNEL_SRC := bfs.cpp
 KERNEL_LINK_CONFIG := bfs.cfg
 
 # use -g for debugging, otherwise use -O3
-KERNEL_OPTIMIZATION_LEVEL := -g
+KERNEL_OPTIMIZATION_LEVEL := -O3
 
 # fixed configs or derived flags, no need to change in most cases
 PLATFORM := xilinx_u280_gen3x16_xdma_1_202211_1
-KERNEL_COMPILE_DIR = $(KERNEL_NAME)_$(BFS_SIZE)_$(FREQUENCY)Mhz_out_vec_opt.$(VITIS_TARGET).vpp.compile.prj
-KERNEL_LINK_DIR = $(KERNEL_NAME)_$(BFS_SIZE)_$(FREQUENCY)Mhz_out_vec_opt.$(VITIS_TARGET).vpp.link.prj
+KERNEL_COMPILE_DIR = $(KERNEL_NAME)_$(BFS_SIZE)_$(FREQUENCY)Mhz_out_vec_opt2.$(VITIS_TARGET).vpp.compile.prj
+KERNEL_LINK_DIR = $(KERNEL_NAME)_$(BFS_SIZE)_$(FREQUENCY)Mhz_out_vec_opt2.$(VITIS_TARGET).vpp.link.prj
 
 KERNEL_COMPILE_FLAGS += -I.
 KERNEL_COMPILE_FLAGS += -DVITIS

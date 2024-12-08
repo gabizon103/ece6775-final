@@ -8,16 +8,17 @@
 void pe (
   hls::stream<int> &coo,
   int in_buf[VEC_SIZE],
-  int out_buf[ROWS_PER_PE],
+  // int out_buf[ROWS_PER_PE],
+  int out_buf[VEC_SIZE],
   int bound,
   int pe_id
 ) {
 
   // initialize to 0 just in case
-  PE_ZERO_LOOP: for (int i = 0; i < ROWS_PER_PE; i++) {
-    #pragma HLS pipeline
-    out_buf[i] = 0;
-  }
+  // PE_ZERO_LOOP: for (int i = 0; i < ROWS_PER_PE; i++) {
+  //   #pragma HLS pipeline
+  //   out_buf[pe_id + i*8] = 0;
+  // }
 
   short row_global, col;
   int row_local, row_col;
@@ -32,6 +33,13 @@ void pe (
     out_buf[row_local] |= in_buf[col];
   }
 }
+
+// void init_outvec(int out_vec[VEC_SIZE]) {
+//   for (int i = 0; i < VEC_SIZE; i++) {
+//     #pragma HLS unroll factor=8
+//     out_vec[i] = 0;
+//   }
+// }
 
 
 
@@ -55,27 +63,20 @@ void write_to_streams(hls::stream<int> &pe_coords, int pe_data[BFS_SIZE], int pe
     // DO_PRAGMA(HLS loop_tripcount min=0 max=BFS_SIZE)
     pe_coords.write(pe_data[j]);
   }
-
 }
 
 void local_to_global(int out_vec[VEC_SIZE], int resbuf[NUM_PE][ROWS_PER_PE], int pe_id) {
   for (int j = 0; j < ROWS_PER_PE; j++) {
-    #pragma HLS unroll factor=64
+    #pragma HLS pipeline
     int global_row = pe_id + j * NUM_PE;
     out_vec[global_row] = resbuf[pe_id][j];
   }
 }
 
 void write_out_vec(int out_vec[VEC_SIZE], int resbuf[NUM_PE][ROWS_PER_PE]){
-  #pragma HLS array_partition variable=out_vec type=block factor=64
-  #pragma HLS array_partition variable=resbuf dim=1 type=block factor=8
-  #pragma HLS array_partition variable=resbuf dim=2 type=block factor=64
-
-  WRITE_OUT_VEC_ZERO_LOOP: for (int i = 0; i < VEC_SIZE; i++){
-    #pragma HLS pipeline
-    #pragma HLS unroll factor=64
-    out_vec[i] = 0;
-  }
+  #pragma HLS array_partition variable=out_vec type=cyclic factor=8
+  #pragma HLS array_partition variable=resbuf dim=1 factor=8
+  // #pragma HLS array_partition variable=resbuf dim=2 type=cyclic factor=8
 
   WRITE_OUT_VEC_COPY_LOOP: for (int i = 0; i < NUM_PE; i++) {
     #pragma HLS unroll factor=8
@@ -99,6 +100,8 @@ void spmv_xcel (
   
   #pragma HLS dataflow
 
+  #pragma HLS array_partition variable=out_vec type=cyclic factor=8
+
   // each PE has a local copy of the input vector
   int vecbuf[NUM_PE][VEC_SIZE];
   #pragma HLS array_partition variable=vecbuf dim=1
@@ -117,12 +120,11 @@ void spmv_xcel (
   #pragma HLS stream variable=pe_coords7 depth=32
 
   // each PE accumulates its local results
-  int resbuf[NUM_PE][ROWS_PER_PE]; 
-  #pragma HLS array_partition variable=resbuf dim=1
+  int resbuf[NUM_PE][ROWS_PER_PE];
 
   // write to each vecbuf
   write_to_vecbuf(vecbuf, in_vec);
-  #pragma HLS array_partition variable=in_vec type=block factor=16
+  #pragma HLS array_partition variable=in_vec type=cyclic factor=16
 
   // write data in `coo` to `pe_coords`
   #pragma HLS array_partition variable=pe_counter
@@ -135,18 +137,20 @@ void spmv_xcel (
   write_to_streams(pe_coords6, pe_data6, pe_counter[6]);
   write_to_streams(pe_coords7, pe_data7, pe_counter[7]);
 
+  // init_outvec(out_vec);
+
   // spawn all the PEs
-  pe(pe_coords0, vecbuf[0], resbuf[0], pe_counter[0], 0);
-  pe(pe_coords1, vecbuf[1], resbuf[1], pe_counter[1], 1);
-  pe(pe_coords2, vecbuf[2], resbuf[2], pe_counter[2], 2);
-  pe(pe_coords3, vecbuf[3], resbuf[3], pe_counter[3], 3);
-  pe(pe_coords4, vecbuf[4], resbuf[4], pe_counter[4], 4);
-  pe(pe_coords5, vecbuf[5], resbuf[5], pe_counter[5], 5);
-  pe(pe_coords6, vecbuf[6], resbuf[6], pe_counter[6], 6);
-  pe(pe_coords7, vecbuf[7], resbuf[7], pe_counter[7], 7);
+  pe(pe_coords0, vecbuf[0], out_vec, pe_counter[0], 0);
+  pe(pe_coords1, vecbuf[1], out_vec, pe_counter[1], 1);
+  pe(pe_coords2, vecbuf[2], out_vec, pe_counter[2], 2);
+  pe(pe_coords3, vecbuf[3], out_vec, pe_counter[3], 3);
+  pe(pe_coords4, vecbuf[4], out_vec, pe_counter[4], 4);
+  pe(pe_coords5, vecbuf[5], out_vec, pe_counter[5], 5);
+  pe(pe_coords6, vecbuf[6], out_vec, pe_counter[6], 6);
+  pe(pe_coords7, vecbuf[7], out_vec, pe_counter[7], 7);
 
   // then, write from each PE's resbuf into output
-  write_out_vec(out_vec, resbuf);
+  // write_out_vec(out_vec, resbuf);
 }
 
 #ifdef VITIS
@@ -208,14 +212,15 @@ extern "C" void bfs_xcel (
     else frontier[i] = 0;
   }
 
-  // new frontier initialized to 0
   int new_frontier[VEC_SIZE];
-  for (int i = 0; i < VEC_SIZE; i++){
-    new_frontier[i] = 0;
-  }
 
   // do many iterations
   for (int i = 0; i < num_hops; i++){
+
+    // new frontier initialized to 0
+    for (int i = 0; i < VEC_SIZE; i++){
+      new_frontier[i] = 0;
+    }
 
     spmv_xcel(pe_data0, pe_data1, pe_data2, pe_data3, pe_data4, pe_data5, pe_data6,
          pe_data7, frontier, new_frontier, pe_counter_buf);
