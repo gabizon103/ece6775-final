@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     std::vector<int, aligned_allocator<int>> final_frontier(BFS_SIZE);
     int coo[BFS_SIZE];
 
-    int num_hops = 4;
+    int num_hops = 256;
 
     short rows, cols; 
     for (int i = 0; i < BFS_SIZE; i++) {
@@ -123,8 +123,10 @@ int main(int argc, char** argv) {
     read_data(coo);
     bfs(coo, final_frontier_exp, num_hops);
 
-    Timer timer("bfs_xcel on FPGA");
-    timer.start();
+    Timer timer_fpga("bfs_xcel on FPGA");
+    Timer timer_preproc("bfs_xcel preprocessing");
+
+    timer_preproc.start();
 
     // sort by rows
     for (int i = 0; i < BFS_SIZE-1; i++) {
@@ -163,6 +165,8 @@ int main(int argc, char** argv) {
     }
 
     // std::cout << "did cyclic blocking\n";
+    timer_preproc.stop();
+    timer_fpga.start();
 
     // allocate device memory
     cl_mem_ext_ptr_t pe_data0_ext;
@@ -689,13 +693,13 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    timer.stop();
+    timer_fpga.stop();
 
     std::cout << "got results\n";
 
-    for (unsigned i = 0; i < BFS_SIZE; ++i) {
-        std::cout << "    (row, col): (" << ((coo[i] >> 16) & 0x0000FFFF) << ", " << (coo[i] & 0x0000FFFF) << ") \n";
-    }
+    // for (unsigned i = 0; i < BFS_SIZE; ++i) {
+    //     std::cout << "    (row, col): (" << ((coo[i] >> 16) & 0x0000FFFF) << ", " << (coo[i] & 0x0000FFFF) << ") \n";
+    // }
 
     // check results
     bool pass = true;
@@ -710,17 +714,17 @@ int main(int argc, char** argv) {
         }
     }
 
-    std::cout << "final_frontier:     [";
-    for (int i = 0; i < BFS_SIZE; i++) {
-        std::cout << final_frontier[i] << ", ";
-    }
-    std::cout << "]\n";
+    // std::cout << "final_frontier:     [";
+    // for (int i = 0; i < BFS_SIZE; i++) {
+    //     std::cout << final_frontier[i] << ", ";
+    // }
+    // std::cout << "]\n";
 
-    std::cout << "final_frontier_exp: [";
-    for (int i = 0; i < BFS_SIZE; i++) {
-        std::cout << final_frontier_exp[i] << ", ";
-    }
-    std::cout << "]\n";
+    // std::cout << "final_frontier_exp: [";
+    // for (int i = 0; i < BFS_SIZE; i++) {
+    //     std::cout << final_frontier_exp[i] << ", ";
+    // }
+    // std::cout << "]\n";
 
     if (pass) {
         std::cout << "Test passed!" << std::endl;
@@ -728,5 +732,12 @@ int main(int argc, char** argv) {
         std::cout << "Test failed!" << std::endl;
     }
 
+    for(int i = 0; i < NUM_PE; i++) {
+	std::cout << "pe_counter: " << pe_counter[i] << std::endl;
+	// for (int j = 0; j < BFS_SIZE; j++){
+	// 	std::cout << ((matrix_split[i][j] >> 16)&0x0000FFFF) << " , ";
+	// }
+	// std::cout << std::endl;
+    }
     return (pass) ? 0 : 1;
 }
