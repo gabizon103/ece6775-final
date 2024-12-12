@@ -83,6 +83,45 @@ results. We used it to specify the trip count of our variable bound loops to hav
 latency while optimizing our design. \newline
 
 \section{Problem Description}
+
+\subsection{BFS}
+We begin by giving a high level overview of BFS. Breadth First Search is a graph traversal algorithm
+in which you start at a node and traverse all of its adjacent nodes. Once all the adjacent nodes are visited,
+then those nodes' adjacent nodes are visited. Figure~\ref{fig:bfs_graph} shows an example traversal order. 
+The common opposite to Breadth First Search is Depth First Search where you start at a node, traverse to an 
+adjacent node, and traverse all nodes reachable through that adjacent node before moving on to the next adjacent
+node. \newline
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\textwidth]{bfs_graph.png}
+  \caption{BFS Example Traversal Order}
+  \label{fig:bfs_graph}
+\end{figure}
+
+\subsection{BFS with Linear Algebra}
+Instead of the traditional way to implement graph algorithms, we take advantage of the fact that a graph can 
+be represented as a matrix to which linear transformations can be applied to perform these graph operations.
+We use sparse matrix multiplication to perform our BFS algorithm. This is a common way to perform BFS as documented
+in the GraphBLAS specification. We can represent graphs using adjacency matrices in which the value at (i, j) in the 
+matrix represents the presence of an edge and possibly a weight between nodes i and j. In our case, these weights will
+be 0 or 1 to simply represent the presence of an edge. Using these matrices, we can perform BFS by iteratively conducting 
+matrix vector multiplication with the adjacency matrix and a vector that represents the frontier, where a 1 in the ith 
+in the frontier means that node i will be explored. Figure~\ref{fig:adj_matrix} shows the way in which the example in 
+Figure~\ref{fig:bfs_graph} is mapped to an adjacency matrix that facilitates matrix vector operations. \newline
+
+\textit{TODO: Should we add an example on how the iterations work? Like perform an spmv and see that it looks at all the 
+nodes in that breadth?}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\textwidth]{adj_matrix.png}
+  \caption{Adjacency Matrix Representation of Graph}
+  \label{fig:adj_matrix}
+\end{figure}
+
+\subsection{Architecture}
+
 \textit{This section should provide a detailed description of the applications or
 automation algorithms/tools realized in this project. Think critically about the important items to
 mention in order for the reader to understand how your design works without having to look into any
@@ -90,8 +129,6 @@ code. For example, what are the inputs and outputs of the application (or archit
 major steps (or modules), and what are the key characteristics (e.g., sources of parallelism and operational intensity) of these steps? It would be useful to include small examples, block diagrams, formulas,
 or other visualizations to help explain your techniques. Please do not include detailed information
 about your source code as your report should be at a high level.}
-
-\subsection{BFS with Linear Algebra}
 
 
 \section{Implementation}
