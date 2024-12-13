@@ -28,13 +28,13 @@ include opencl/opencl.mk # brings in opencl_CXXFLAGS and opencl_LDFLAGS
 XOCL_DIR := xcl2
 XOCL_SRC := $(XOCL_DIR)/xcl2.cpp
 xocl-host: xocl-host.cpp bfs_sw.cpp
-	g++ -DBFS_SIZE=$(BFS_SIZE) -DVEC_SIZE=$(VEC_SIZE) $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
+	g++ -DBFS_SIZE=$(BFS_SIZE) -DVEC_SIZE=$(VEC_SIZE) -pthread $^ $(XOCL_SRC) -o $@ -O3 --std=c++11 -I$(XOCL_DIR) $(opencl_CXXFLAGS) $(opencl_LDFLAGS)
 
 
 # tweak these knobs according to our needs
 # sw_emu, hw_emu, or hw
-# VITIS_TARGET := hw
 VITIS_TARGET := hw
+# VITIS_TARGET := sw_emu
 
 # in MHz
 FREQUENCY := 200
