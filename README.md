@@ -41,3 +41,5 @@ VITIS_TARGET = hw
 vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
   ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 ```
+
+**3. Run `make vitis`.** 
