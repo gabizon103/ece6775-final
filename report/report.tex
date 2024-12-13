@@ -67,11 +67,8 @@ It is important to emphasize that HBM allows our memory bound workload of BFS to
   \label{fig:hbm}
 \end{figure}
 
-\subsection{Vitis Software}
-
-
 \subsection{HLS Directives}
-To optimize our design, we use multiple HLS directives: dataflow, interface, loop tripcount,
+\noindent To optimize our design, we use multiple HLS directives: dataflow, interface, loop tripcount,
 array partition, pipeline, and unroll. For this report, we focus on the ones that most students 
 in ECE6775 are not familiar with. First, the \textbf{dataflow} pragma enables task-level parallelism. 
 This allows functions and loops to overlap in their operation. If there are any consumer and producer 
@@ -85,12 +82,12 @@ optimization of memory access for ports, arrays, and variables in the design. La
 \textbf{loop tripcount} directive is used to specify the minimum, maximum, and average trips that a 
 loop might take. This directive is only used for analysis and it does not actually affect the synthesis 
 results. We used it to specify the trip count of our variable bound loops to have better estimates of 
-latency while optimizing our design. \newline
+latency while optimizing our design.
 
 \section{Problem Description}
 
 \subsection{BFS}
-We begin by giving a high level overview of BFS. Breadth First Search is a graph traversal algorithm
+\noindent We begin by giving a high level overview of BFS. Breadth First Search is a graph traversal algorithm
 in which you start at a node and traverse all of its adjacent nodes. Once all the adjacent nodes are visited,
 then those nodes' adjacent nodes are visited. Figure~\ref{fig:bfs_graph} shows an example traversal order. 
 The common opposite to Breadth First Search is Depth First Search where you start at a node, traverse to an 
@@ -105,7 +102,7 @@ node. \newline
 \end{figure}
 
 \subsection{BFS with Linear Algebra}
-Instead of the traditional way to implement graph algorithms, we take advantage of the fact that a graph can 
+\noindent Instead of the traditional way to implement graph algorithms, we take advantage of the fact that a graph can 
 be represented as a matrix to which linear transformations can be applied to perform these graph operations.
 We use sparse matrix multiplication to perform our BFS algorithm. This is a common way to perform BFS as documented
 in the GraphBLAS specification. We can represent graphs using adjacency matrices in which the value at (i, j) in the 
@@ -113,10 +110,7 @@ matrix represents the presence of an edge and possibly a weight between nodes i 
 be 0 or 1 to simply represent the presence of an edge. Using these matrices, we can perform BFS by iteratively conducting 
 matrix vector multiplication with the adjacency matrix and a vector that represents the frontier, where a 1 in the ith 
 in the frontier means that node i will be explored. Figure~\ref{fig:adj_matrix} shows the way in which the example in 
-Figure~\ref{fig:bfs_graph} is mapped to an adjacency matrix that facilitates matrix vector operations. \newline
-
-\textit{TODO: Should we add an example on how the iterations work? Like perform an spmv and see that it looks at all the 
-nodes in that breadth?}
+Figure~\ref{fig:bfs_graph} is mapped to an adjacency matrix that facilitates matrix vector operations.
 
 \begin{figure}[h!]
   \centering
@@ -127,34 +121,23 @@ nodes in that breadth?}
 
 \subsection{Architecture}
 
-% \textit{This section should provide a detailed description of the applications
-% or automation algorithms/tools realized in this project. Think critically about
-% the important items to mention in order for the reader to understand how your
-% design works without having to look into any code. For example, what are the
-% inputs and outputs of the application (or architecture), what are the major
-% steps (or modules), and what are the key characteristics (e.g., sources of
-% parallelism and operational intensity) of these steps? It would be useful to
-% include small examples, block diagrams, formulas, or other visualizations to
-% help explain your techniques. Please do not include detailed information about
-% your source code as your report should be at a high level.}
-
-Our application takes as input a matrix encoded as a graph, using the COO
+\noindent Our application takes as input a matrix encoded as a graph, using the COO
 format. For our benchmarks, we use matrices from the Suite Sparse Matrix
 Collection. While this data is not particularly meaningful as a graph (the
 matrices often represent data important to algorithms in various domains), they
 provided us with access to many sparse matrices so we did not have to generate
 our own. Also, the Suite Sparse matrices are already encoded in COO format,
-eliminating one step of pre-processing we would need to do. 
+eliminating one step of pre-processing we would need to do. \newline
 
-Our application also takes an integer, $hops$, which specifies how many levels
+\noindent Our application also takes an integer, $hops$, which specifies how many levels
 from the start node in the graph to traverse. Our algorithm outputs the frontier
 of nodes at that level, $frontier$. For example, using the graph in
 Figure~\ref{fig:adj_matrix}, with $hops=1$, the output would be $frontier =
 \irow{0 & 1 & 1 & 0 & 0 & 0 & 0}$ because nodes 1 and 2 are 1 hop away from the
 start node. Similarly, with $hops=2$, the output would be $frontier=\irow{0 & 0
-& 0 & 1 & 1 & 1 & 1}$.
+& 0 & 1 & 1 & 1 & 1}$. \newline
 
-The steps to our baseline application are shown in
+\noindent The steps to our baseline application are shown in
 Figure~\ref{fig:baseline_impl}. The host code is responsible for reading the
 matrix from the specified file, and parses it into a COO vector (with the row
 and column indices packed into a single 32-bit integer) that our application
@@ -169,7 +152,7 @@ the frontier set, we mark it as visited. Using the updated visited set, we apply
 a mask to the SpMV output to ensure that we only visit a node once. After this
 step, if there are more hops to make (meaning more iterations), we jump back to
 doing the SpMV. If not, we write the most recent SpMV result to our kernel
-output, which we then transfer back to the host.
+output, which we then transfer back to the host. \newline
 
 \begin{figure}[h!]
   \centering
@@ -178,7 +161,7 @@ output, which we then transfer back to the host.
   \label{fig:baseline_impl}
 \end{figure}
 
-This is our baseline design, but we identify that the SpMV kernel is a major
+\noindent This is our baseline design, but we identify that the SpMV kernel is a major
 source of parallelism. Most of the application is memory-bound, meaning it is
 bottlenecked by the amount of data we can access from memory at any given time
 rather than the number of computations we can do. SpMV, however, is simply a
@@ -188,29 +171,20 @@ optimizations in the next section, as well as the implications it has for our
 application's memory hierarchy.
 
 \section{Implementation}
-% \textit{This section should describe how you implemented and optimized your designs. For
-% example, did you take advantage of any third-party libraries? Which software and/or hardware blocks
-% are included in your design, and what hardware device (if any) did you target? Please also describe
-% how you optimize the design. If you use more than one optimization methods, please summarize them
-% in this section and later compare their impacts in the evaluation section regarding different aspect (e.g.,
-% performance, resource usage, accuracy). In most cases, it would be helpful to include block diagrams
-% of your implementation illustrating the flow of data through your design, the interconnection between
-% different hardware blocks, and whether certain blocks are pipelined or parallelized. As in the previous
-% section, providing meaningful visualizations would help the reader better appreciate your work.}
 
 \subsection{Base Design}
-Our baseline implementation, which targets the U280 FPGA, is represented in
+\noindent Our baseline implementation, which targets the U280 FPGA, is represented in
 Figure~\ref{fig:baseline_impl}. Specifically, we make use of the board's high-bandwidth memory, shown in
 Figure~\ref{fig:hbm} and Figure~\ref{fig:u250}, to transfer the matrix from the host to the FPGA.
 
 \subsection{8 PE Design}
-We identified that one of the bottlenecks of our base design was how fast we could compute each SpMV.
+\noindent We identified that one of the bottlenecks of our base design was how fast we could compute each SpMV.
 In order to accelerate it, we split the computation up into 8 processing elements, which would each 
 handle the computations for a smaller part of the matrix, and we would have additional hardware
 to merge their results. The design of the SpMV kernel is shown in Figure~\ref{fig:spmv_diagram} and the
 design of each PE is shown in Figure~\ref{fig:pe_diagram}. As a heuristic for load balancing, we also
 assign rows to each PE cyclically. For example, PE 0 works on rows 0, 8, 16, and so on, while PE 1 works
-on 1, 9, 17, and so on.
+on 1, 9, 17, and so on. These sets of COO values are split into 8 HBM channels, one for each PE. \newline
 
 \begin{figure}[h!]
   \centering
@@ -226,7 +200,7 @@ on 1, 9, 17, and so on.
   \label{fig:pe_diagram}
 \end{figure}
 
-In order to apply the dataflow pragma to our SpMV kernel, each PE had to read and write to its own
+\noindent In order to apply the dataflow pragma to our SpMV kernel, each PE had to read and write to its own
 memories that the others did not touch. This means that we had to broadcast the BFS \verb|in_vec| argument
 to 8 separate arrays, one for each PE. In Figure~\ref{fig:spmv_diagram}, this is represented by the
 arrows pointing from the block labeled \verb|in_vec| to all the blocks titled \verb|vecbuf|. Additionally,
@@ -234,13 +208,13 @@ this implementation also requires us to partition the matrix into 8 blocks, one 
 code. We do this by modifying the interface to the BFS kernel. Now, it must take 8 arrays which represent
 the rows and columns that each PE must process. It also requires us to sort the matrix entires by row;
 this is done in the host code as well. The matrix data that each PE uses is represented as an HLS stream,
-or a FIFO. Each PE reads data from its own stream when it is ready to process it.
+or a FIFO. Each PE reads data from its own stream when it is ready to process it. \newline
 
-Additionally, each PE writes to its own output vector. We slightly modify our BFS algorithm to work
+\noindent Additionally, each PE writes to its own output vector. We slightly modify our BFS algorithm to work
 on this data format, as the baseline only has 1 PE, so there is only one output vector. The logic remains
 the same, however, and we merge these 8 separate output vectors into a single vector after all of the
 SpMV iterations have completed. This output vector is then communicated back to the host device. A diagram
-of the modified, optimized version that uses PEs is shown in Figure~\ref{fig:bfs_opt}.
+of the modified, optimized version that uses PEs is shown in Figure~\ref{fig:bfs_opt}. \newline
 
 \begin{figure}[h!]
   \centering
@@ -249,7 +223,7 @@ of the modified, optimized version that uses PEs is shown in Figure~\ref{fig:bfs
   \label{fig:bfs_opt}
 \end{figure}
 
-One concern with this implementation is the added overhead required to set up
+\noindent One concern with this implementation is the added overhead required to set up
 our data to be processed by 8 PEs in parallel. Specifically, the additional
 computations we had to perform are sorting the matrix by row, splitting it into
 8 different blocks for each PE, broadcasting the input vector to each PE, and
@@ -270,8 +244,8 @@ vectors, we were able to cut down on the overhead incurred by having multiple PE
 were able to achieve a speedup, which is discussed further in the evaluation.
 
 \subsection{16 PE Design}
-We also wrote a design that uses 16 PEs, which has an overall structure
-identical to the 8 PE design. However, we found that this design actually does
+\noindent We also wrote a design that uses 16 PEs with 16 HBM channels, which has an overall structure
+identical to the 8 PE design with 8 HBM channels. However, we found that this design actually does
 not achieve a speedup over our baseline. We will discuss further in our
 evaluation, but our hypothesis is that are dataset does not contain matrices
 with a large enough number of nonzero entries to warrant that many PEs. As a
@@ -280,19 +254,19 @@ outputs) outweighs the performance boost we might get from computing more of
 each SpMV in parallel, compared to having only 8 PEs.
 
 \section{Testing}
-We tested our designs and optimizations iteratively. At the beginning of our project timeline, we 
+\noindent We tested our designs and optimizations iteratively. At the beginning of our project timeline, we 
 wrote our SpMV and BFS kernels and ran them in software to verify their correctness. Because we did not
 have a trusted baseline to compare to for correctness, we generated several random matrices and 
 ran our BFS algorithm by hand to ensure that the software implementation was correct. Once we verified
-it this way for small examples, we trusted that it was correct because the logic was also quite simple.
+it this way for small examples, we trusted that it was correct because the logic was also quite simple. \newline
 
-Next, using the software implementation as our source of truth, we implemented the host code to orchestrate
+\noindent Next, using the software implementation as our source of truth, we implemented the host code to orchestrate
 data movement between the CPU and the FPGA running our BFS algorithm. This way, we could implement our designs
 in hardware, run them on the FPGA, and compare the results to the software implementation. When we made
 major changes, like trying various optimizations, our first step was to run software emulation and ensure
-that the optimizations maintained the correct functionality of our kernel.
+that the optimizations maintained the correct functionality of our kernel. \newline 
 
-We also verified all of our designs this way with hardware emulation and bitstream generation. We wanted
+\noindent We also verified all of our designs this way with hardware emulation and bitstream generation. We wanted
 to ensure that there was no unexpected behavior when applying optimizations or compiling the design
 to hardware. There were instances where hardware emulation caught bugs arising from the incorrect use
 of certain optimization pragmas, which weren't apparent in software emulation. As a whole, this end-to-end
@@ -309,16 +283,67 @@ than another, why one design achieves a higher metric than another, or how you t
 for another. Consider going into detail for one particular instance of your experiment and analyze how
 it achieves the given results}
 
-We evaluated our designs across a series of 7 benchmarks, each of which have a number of nonzero entries ranging
-from about 1000 to 4096, since 4096 is the largest number of nonzero entries our implementation can handle.
+\noindent We evaluated our designs across a series of 7 benchmarks, each of which have a number of nonzero entries ranging
+from about 1000 to 4096, since 4096 is the largest number of nonzero entries our implementation can handle. \newline
 
 
 \section{Project Management}
-\textit{This section should clearly identify the work division among the students in
-the group using a project timeline that lists the tasks and milestones of the project, the member(s) of
-the group responsible for each task, and the actual completion date of each task. This section should
-contain a description of how the overall project progressed and any successes and/or challenges during
-the course of the project.}
+
+Throughout the 6 weeks of our project, we met every 2-3 days to catch up on the work we have done and to set up
+milestones for the next time we meet. This ensured that everyone had something to do and made the project
+progress little by little. The steps to the completion of our project are generalized as 1) get familiar with
+Vitis framework and new FPGA, 2) implement SpMV and BFS accelerators, and 3) optimize accelerators. Everything went
+smoothly with a minor inconvenience of the server update, which required us to change our workflow a little bit. \newline
+
+\noindent \textbf{Week 1 (11/05 - 11/12)}:
+\begin{itemize}
+  \item Set up Vitis framework on example vvadd kernel with all hardware targets (Tomas)
+  \item Set up flow to read SuiteSparseMatrix dataset (Ethan)
+  \item Implement software SpMV on COO (Dylan)
+\end{itemize}
+
+\noindent \textbf{Week 2 (11/12 - 11/19)}:
+\begin{itemize}
+  \item Test software implementation of SpMV with COO format (Dylan)
+  \item Write SpMV kernel and test bench for traditional HLS flow, verify with random tests (Ethan)
+  \item Set up Vitis framework on SpMV kernel with all hardware targets (Tomas, Dylan)
+  \item Implement BFS implementation that uses the SPMV kernel (Tomas, Ethan)
+  \item Create random testbench for BFS (Ethan)
+  \item Set up Vitis framework for BFS (Tomas)
+\end{itemize}
+
+\noindent \textbf{Week 3 (11/19 - 11/26)}:
+\begin{itemize}
+  \item Concatenate row and data value of COO coordinate into one int value (Tomas)
+  \item Optimize spmv kernel by instantiating multiple PEs, coordinating data movement between them, and apply dataflow optimizations (Ethan)
+  \item Attempt to synthesize BFS for small sizes (Ethan)
+  \item Create diagrams for SpMV and BFS (Dylan)
+\end{itemize}
+
+\noindent \textbf{Week 4 (11/26 - 12/03)}:
+\begin{itemize}
+  \item Refactor code to run unoptimized kernel, for a baseline comparison (Ethan)
+  \item Write code to run kernels with Vivado tool, for debugging (Ethan)
+  \item Fix code to handle dataflow pragma correctly (Tomas)
+  \item Refactor BFS code to include the number of hops to make, instead of full traversal (Ethan)
+  \item Incorporate SuiteSparseMatrix into code (Tomas, Dylan)
+\end{itemize}
+
+\noindent \textbf{Week 5 (12/03 - 12/10)}:
+\begin{itemize}
+  \item Set up timing framework: preprocessing vs. FPGA (Ethan)
+  \item Write BFS implementation with 16 PEs (Tomas)
+  \item Synthesize baseline, 8 PE, 16 PE implementations (Dylan)
+  \item Profile implementations to determine small speedup (Ethan)
+  \item Unroll some loops related to buffering of input and output (Ethan)
+  \item Optimize code by eliminating need of output buffer merging (Tomas)
+\end{itemize}
+
+\noindent \textbf{Week 6 (12/10 - 12/17)}:
+\begin{itemize}
+  \item Record presentation (Dylan, Ethan, Tomas)
+  \item Write report (Dylan, Ethan, Tomas)
+\end{itemize}
 
 \section{Conclusion}
 
