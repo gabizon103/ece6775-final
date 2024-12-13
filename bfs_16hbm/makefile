@@ -48,7 +48,7 @@ KERNEL_SRC := bfs.cpp
 KERNEL_LINK_CONFIG := bfs.cfg
 
 # use -g for debugging, otherwise use -O3
-KERNEL_OPTIMIZATION_LEVEL := -O3
+KERNEL_OPTIMIZATION_LEVEL := -g
 
 # fixed configs or derived flags, no need to change in most cases
 PLATFORM := xilinx_u280_gen3x16_xdma_1_202211_1
@@ -99,10 +99,10 @@ endif
 
 # phony targets to run compiled binaries
 .PHONY: vitis
-# vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-# 	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
-	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+	./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
+#vitis: xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin $(EMCONFIG)
+#	  XCL_EMULATION_MODE=$(VITIS_TARGET) ./xocl-host $(KERNEL_LINK_DIR)/$(KERNEL_NAME).xclbin
 
 # ==============================================================================
 # clean stuff
