@@ -3,7 +3,6 @@
 \usepackage{titlesec}
 \usepackage{graphicx}
 \usepackage{amsmath}
-\pagenumbering{gobble}
 
 % Title formatting
 \titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
@@ -273,19 +272,111 @@ of certain optimization pragmas, which weren't apparent in software emulation. A
 testing strategy made us confident that our optimized designs were also correct.
 
 \section{Evaluation}
-\textit{Students should describe the experimental setup used to evaluate their design. Students
-should describe the data inputs used to evaluate their design and provide an analysis of the achieved
-results. The results should be clearly summarized in terms of tables, text, and/or plots. Please provide
-qualitative and quantitative analysis of the results and discuss insights from these results. Results may
-include (but are not limited to) the execution time of an algorithm, hardware resource usage, achievable
-throughput, and error rate. It would be interesting, for example, to discuss why one design is better
-than another, why one design achieves a higher metric than another, or how you trade-off one metric
-for another. Consider going into detail for one particular instance of your experiment and analyze how
-it achieves the given results}
+% \textit{Students should describe the experimental setup used to evaluate their design. Students
+% should describe the data inputs used to evaluate their design and provide an analysis of the achieved
+% results. The results should be clearly summarized in terms of tables, text, and/or plots. Please provide
+% qualitative and quantitative analysis of the results and discuss insights from these results. Results may
+% include (but are not limited to) the execution time of an algorithm, hardware resource usage, achievable
+% throughput, and error rate. It would be interesting, for example, to discuss why one design is better
+% than another, why one design achieves a higher metric than another, or how you trade-off one metric
+% for another. Consider going into detail for one particular instance of your experiment and analyze how
+% it achieves the given results}
 
 \noindent We evaluated our designs across a series of 7 benchmarks, each of which have a number of nonzero entries ranging
-from about 1000 to 4096, since 4096 is the largest number of nonzero entries our implementation can handle. \newline
+from several hundred to 4096, since 4096 is the largest number of nonzero entries our implementation can handle. \newline
 
+\begin{figure}[h!]
+  \centering
+  \begin{tabular} {| c | c | c | c | c | c | c | c |}
+    \hline
+                    & young\_4c & 685\_bus & 1138\_bus & ash292 & lp\_nug06 & lund\_b & olm1000 \\
+    \hline
+    base            & 10.485    & 10.405   & 10.410    & 10.393 & 10.414    & 10.4002 & 10.430 \\
+    \hline
+    8 PE            & 4.853     & 7.204    & 6.467     & 8.022  & 6.964     & 7.989   & 5.153 \\
+    \hline
+    8 PE Processing & 7.861     & 8.820    & 9.060     & 8.475  & 8.995     & 8.601   & 8.958 \\
+    \hline
+    16 PE           & 5.466     & 7.277    & 6.549     & 8.1532 & 6.943     & 8.090   & 5.905 \\
+    \hline
+    16 PE Processing& 7.959     & 10.675   &   11.1232 & 9.298  & 9.847     & 9.783   & 8.703 \\
+    \hline
+  \end{tabular}
+  \caption{Execution Time Breakdown, in ms}
+  \label{fig:exec_times}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \begin{tabular} {| c | c | c | c | c | c | c | c |}
+    \hline
+         & young\_4c & 685\_bus & 1138\_bus & ash292 & lp\_nug06 & lund\_b & olm1000 \\
+    \hline
+    N    & 841       & 685      & 1138      & 292    & 486       & 147     & 1000 \\
+    \hline
+    NNZ  & 4089      & 1967     &  2596     & 1250   & 2232      & 1294    & 3996 \\
+    \hline
+  \end{tabular}
+  \caption{Benchmark characteristics}
+  \label{fig:bench_info}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \begin{tabular} {| c | c | c | c | c | c | c | c |}
+    \hline
+                    & young\_4c & 685\_bus & 1138\_bus & ash292 & lp\_nug06 & lund\_b & olm1000 \\
+    \hline
+    base            & 1         & 1        & 1         & 1      & 1         & 1       & 1       \\
+    \hline
+    8 PE            & 2.16      & 1.44     & 1.61      & 1.30   & 1.50      & 1.30    & 2.02 \\
+    \hline
+    16 PE           & 1.92      & 1.43     & 1.59      & 1.27   & 1.50      & 1.29    & 1.77 \\
+    \hline    
+  \end{tabular}
+  \caption{Speedup over base}
+  \label{fig:speedups}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \begin{tabular} {| c | c | c | c | c | c | c |}
+    \hline
+          & BRAM \% & FF \% & LUT \% & BRAM SLR \% & FF SLR \% & LUT SLR \% \\
+    \hline
+    base  & 0 & 0 & 2 & 0 & 0 & 0 \\
+    \hline
+    8 PE  & 0 & 2 & 10 & 0 & 0 & 3 \\
+    \hline
+    16 PE & 0 & 8 & 53 & 0 & 2 & 17 \\
+    \hline
+  \end{tabular}
+  \caption{Resource usage}
+  \label{fig:resources}
+\end{figure}
+
+Figure~\ref{fig:exec_times} displays the execution time of each of our designs, separating out the FPGA execution time from
+the host preprocessing time. Figure~\ref{fig:bench_info} contains the characteristics of each benchmark, where N is the number of
+rows and columns in the matrix and NNZ is the number of nonzero entries. Since these are sparse matrices, it is true for all the
+benchmarks that $\mathit{NNZ} << N^2$. Figure ~\ref{fig:speedups} shows the speedup that the 8 and 16 PE designs achieve over
+the baseline design. Figure ~\ref{fig:resources} shows the resource usage across our different designs.
+
+We observe several trends. First, we note that the 16 PE design never outperforms the 8 PE design. However, the 16 PE design
+uses many more resources than the 8 PE design, particularly LUTs. The disparity in resource usage can likely be attributed to
+the extra data storage and the associated logic for accessing/routing it, which is needed as the number of PEs grows. We hypothesize
+that the 16 PE design underperforms the 8 PE design because the overhead required to coordinate data movement between the PEs is far
+greater than the amount of parallelism we gain in computing each SpMV. As we discussed previously, introducing parallel PEs requires
+additional time to broadcast each SpMV input vector, as well as merge the output vector at the end of the BFS. Furthermore, our
+design operates on relatively small matrices. We hypothesize that the 8 PE design already achieves much of the parallelism that is
+possible from the computation of each SpMV, and the rest of the time is dominated by data movement. As a result, there is not
+much parallelism for the 16 PE design to take advantage of. However, we predict that if we were to evaluate benchmarks with more
+nonzero entries, the 16 PE design would probably achieve speedups greater than the 8 PE design.
+
+We also note that the speedup is greatest on the young\_4c and olm1000 benchmarks. We hypothesize that this is due to these
+benchmarks achieving the best load balancing. Both of these benchmarks have nonzero entries closest to our limit, 4096. This
+means that each PE is doing an almost equal amount of work, whereas in other benchmarks some PEs are likely doing more work
+than others. As a result, the load balanced benchmarks achieve a greater speedup because they take advantage of more parallelism
+than the ones that are not load balanced.
 
 \section{Project Management}
 
