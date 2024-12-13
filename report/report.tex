@@ -283,7 +283,7 @@ testing strategy made us confident that our optimized designs were also correct.
 % it achieves the given results}
 
 \noindent We evaluated our designs across a series of 7 benchmarks, each of which have a number of nonzero entries ranging
-from several hundred to 4096, since 4096 is the largest number of nonzero entries our implementation can handle. \newline
+from several hundred to 4096, since 4096 is the largest number of nonzero entries our implementation can handle. 
 
 \begin{figure}[h!]
   \centering
@@ -323,18 +323,8 @@ from several hundred to 4096, since 4096 is the largest number of nonzero entrie
 
 \begin{figure}[h!]
   \centering
-  \begin{tabular} {| c | c | c | c | c | c | c | c |}
-    \hline
-                    & young\_4c & 685\_bus & 1138\_bus & ash292 & lp\_nug06 & lund\_b & olm1000 \\
-    \hline
-    base            & 1         & 1        & 1         & 1      & 1         & 1       & 1       \\
-    \hline
-    8 PE            & 2.16      & 1.44     & 1.61      & 1.30   & 1.50      & 1.30    & 2.02 \\
-    \hline
-    16 PE           & 1.92      & 1.43     & 1.59      & 1.27   & 1.50      & 1.29    & 1.77 \\
-    \hline    
-  \end{tabular}
-  \caption{Speedup over base}
+  \includegraphics[width=0.75\textwidth]{speedup.png}
+  \caption{Preprocessing times and speedup over base}
   \label{fig:speedups}
 \end{figure}
 
@@ -355,13 +345,13 @@ from several hundred to 4096, since 4096 is the largest number of nonzero entrie
   \label{fig:resources}
 \end{figure}
 
-Figure~\ref{fig:exec_times} displays the execution time of each of our designs, separating out the FPGA execution time from
+\noindent Figure~\ref{fig:exec_times} displays the execution time of each of our designs, separating out the FPGA execution time from
 the host preprocessing time. Figure~\ref{fig:bench_info} contains the characteristics of each benchmark, where N is the number of
 rows and columns in the matrix and NNZ is the number of nonzero entries. Since these are sparse matrices, it is true for all the
-benchmarks that $\mathit{NNZ} << N^2$. Figure ~\ref{fig:speedups} shows the speedup that the 8 and 16 PE designs achieve over
-the baseline design. Figure ~\ref{fig:resources} shows the resource usage across our different designs.
+benchmarks that $\mathit{NNZ} << N^2$. Figure ~\ref{fig:speedups} shows the preprocessing times and the respective speedup that the 8 and 
+16 PE designs achieve over the baseline design. Figure ~\ref{fig:resources} shows the resource usage across our different designs.\newline
 
-We observe several trends. First, we note that the 16 PE design never outperforms the 8 PE design. However, the 16 PE design
+\noindent We observe several trends. First, we note that the 16 PE design never outperforms the 8 PE design. However, the 16 PE design
 uses many more resources than the 8 PE design, particularly LUTs. The disparity in resource usage can likely be attributed to
 the extra data storage and the associated logic for accessing/routing it, which is needed as the number of PEs grows. We hypothesize
 that the 16 PE design underperforms the 8 PE design because the overhead required to coordinate data movement between the PEs is far
@@ -370,9 +360,9 @@ additional time to broadcast each SpMV input vector, as well as merge the output
 design operates on relatively small matrices. We hypothesize that the 8 PE design already achieves much of the parallelism that is
 possible from the computation of each SpMV, and the rest of the time is dominated by data movement. As a result, there is not
 much parallelism for the 16 PE design to take advantage of. However, we predict that if we were to evaluate benchmarks with more
-nonzero entries, the 16 PE design would probably achieve speedups greater than the 8 PE design.
+nonzero entries, the 16 PE design would probably achieve speedups greater than the 8 PE design.\newline
 
-We also note that the speedup is greatest on the young\_4c and olm1000 benchmarks. We hypothesize that this is due to these
+\noindent We also note that the speedup is greatest on the young\_4c and olm1000 benchmarks. We hypothesize that this is due to these
 benchmarks achieving the best load balancing. Both of these benchmarks have nonzero entries closest to our limit, 4096. This
 means that each PE is doing an almost equal amount of work, whereas in other benchmarks some PEs are likely doing more work
 than others. As a result, the load balanced benchmarks achieve a greater speedup because they take advantage of more parallelism
@@ -380,7 +370,7 @@ than the ones that are not load balanced.
 
 \section{Project Management}
 
-Throughout the 6 weeks of our project, we met every 2-3 days to catch up on the work we have done and to set up
+\noindent Throughout the 6 weeks of our project, we met every 2-3 days to catch up on the work we have done and to set up
 milestones for the next time we meet. This ensured that everyone had something to do and made the project
 progress little by little. The steps to the completion of our project are generalized as 1) get familiar with
 Vitis framework and new FPGA, 2) implement SpMV and BFS accelerators, and 3) optimize accelerators. Everything went
@@ -438,8 +428,19 @@ smoothly with a minor inconvenience of the server update, which required us to c
 
 \section{Conclusion}
 
-\textit{This section should provide a concise summary of the algorithms, implementation, and results. Please also summarize the lessons you learned in the course of
-the project and acknowledge the additional help you received from the course staff or other students}
-
+\noindent In this project, we explore the acceleration of BFS by exploiting linear algebra 
+operations, high-bandwidth memory, and data level parallelism. By representing graphs in
+COO format, we are able to perform sparse matrix vector multiplication on the represented graph
+to perform fast traversals. To minimize the memory bound nature of BFS, we use the HBM 
+channels in the U280 FPGA platform to concurrently read different row data from device memory.
+Lastly, we take advantage of the fact that the SpMV operations can be performed concurrently for 
+different rows to distribute the workload into different processing elements. We investigate
+for designs with a single PE with one HBM channel, 8 PEs with 8 HBM channels, and 16 PEs with 16 HBM
+channels and observe speedups from the 8 PE design due to data level parallelism but 
+less speedup from the 16 PE design due to communication overhead. Throughout the course of the 
+project, we have learned about the Vitis software, the U280 card, GraphBLAS concepts, new HLS directives
+like dataflow and interface, and testing and profiling techniques to evaluate our designs. We would
+like to acknowledge the significant help we received from Yixiao to get set up for the bigger FPGA, 
+to learn about GraphBLAS, and to debug significant problems. 
 
 \end{document}
