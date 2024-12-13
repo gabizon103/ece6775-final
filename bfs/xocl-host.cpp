@@ -36,13 +36,12 @@ const std::string DEVICE_XSA = "xilinx_u280_gen3x16_xdma_base_1"; // only used w
 
 int main(int argc, char** argv) {
     // usage: host <xclbin_path> <vector size>
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <xclbin_path>" << std::endl;
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <xclbin_path>" <<  " <data_path> " << std::endl;
         return 1;
     }
     const std::string xclbin = argv[1];
-
-    std::cout << "vecsize: " << VEC_SIZE;
+    const std::string data_file = argv[2];
 
     // first see if we are in hw
     const char* emulation_mode = getenv("XCL_EMULATION_MODE");
@@ -126,7 +125,15 @@ int main(int argc, char** argv) {
         final_frontier_exp[i] = 0;
     }
 
-    read_data(coo);
+    const char* data_685_bus = "../data/685_bus.dat";
+    const char* data_1138_bus = "../data/1138_bus.dat";
+    const char* data_ash292 = "../data/ash292.dat";
+    const char* data_lpnug06 = "../data/lp_nug06.dat";
+    const char* data_lund_b = "../data/lund_b.dat";
+    const char* data_olm1000 = "../data/olm1000.dat";
+    const char* data_young4c = "../data/young4c.dat";  
+
+    read_data(coo, data_file);
     bfs(coo, final_frontier_exp, num_hops);
 
     Timer timer_fpga("bfs_xcel on FPGA");

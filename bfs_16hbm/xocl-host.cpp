@@ -32,11 +32,12 @@ const std::string DEVICE_XSA = "xilinx_u280_gen3x16_xdma_base_1"; // only used w
 
 int main(int argc, char** argv) {
     // usage: host <xclbin_path> <vector size>
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <xclbin_path>" << std::endl;
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <xclbin_path>" <<  " <data_path> " << std::endl;
         return 1;
     }
     const std::string xclbin = argv[1];
+    const std::string data_file = argv[2];
 
     // first see if we are in hw
     const char* emulation_mode = getenv("XCL_EMULATION_MODE");
@@ -120,7 +121,7 @@ int main(int argc, char** argv) {
         final_frontier_exp[i] = 0;
     }
 
-    read_data(coo);
+    read_data(coo, data_file);
     bfs(coo, final_frontier_exp, num_hops);
 
     Timer timer_fpga("bfs_xcel on FPGA");
@@ -732,12 +733,5 @@ int main(int argc, char** argv) {
         std::cout << "Test failed!" << std::endl;
     }
 
-    for(int i = 0; i < NUM_PE; i++) {
-	std::cout << "pe_counter: " << pe_counter[i] << std::endl;
-	// for (int j = 0; j < BFS_SIZE; j++){
-	// 	std::cout << ((matrix_split[i][j] >> 16)&0x0000FFFF) << " , ";
-	// }
-	// std::cout << std::endl;
-    }
     return (pass) ? 0 : 1;
 }

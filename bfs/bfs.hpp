@@ -39,6 +39,6 @@ extern "C" void bfs_xcel (
   int num_hops
 );
 
-void read_data(int coo[BFS_SIZE]);
+void read_data(int coo[BFS_SIZE], std::string filename);
 
 #endif
