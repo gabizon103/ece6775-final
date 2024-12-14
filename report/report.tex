@@ -269,7 +269,42 @@ that the optimizations maintained the correct functionality of our kernel. \newl
 to ensure that there was no unexpected behavior when applying optimizations or compiling the design
 to hardware. There were instances where hardware emulation caught bugs arising from the incorrect use
 of certain optimization pragmas, which weren't apparent in software emulation. As a whole, this end-to-end
-testing strategy made us confident that our optimized designs were also correct.
+testing strategy made us confident that our optimized designs were also correct. \newline
+
+\noindent In addition to verifying correctness, we used the Vitis Analyzer to
+check that our optimizations were speeding up the parts of our application that
+we expected. Figure~\ref{fig:profile_unopt} shows the profiling report of our
+unoptimized design and Figure~\ref{fig:profile_opt} shows the report for one of
+our design iterations where we tried to optimize the process of broadcasting
+input vectors. In both diagrams, the green block between the first two markers
+is one execution of an SpMV. The first block under that is the process of
+broadcasting the input vector, then writing to the PE streams, then the SpMV
+computation, and then writing the output vectors. In
+Figure~\ref{fig:profile_unopt}, broadcasting the input vector takes longer than the SpMV computation.
+This means that the parallelism we achieve from using PEs in the first place is outweighed by the overhead.
+So, we applied partial loop unrolling and pipelining to the loops that broadcast the vectors, and achieved the
+performance shown in Figure~\ref{fig:profile_opt}. The overall execution of this optimized kernel is faster than
+the optimized one, so we are not sure why the timescale shows the optimized SpMV being slower than the unoptimized one.
+However, we are confident the optimization worked because the time of the vector broadcast is now less than the time
+taken to do the actual computation. \newline
+
+\noindent Vitis Analyzer was useful for visualizing the effectiveness of our optimizations, but unfortunately we
+were unable to utilize it further because of complications arising from the switch to different servers.
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}[b]{0.8\textwidth}
+    \includegraphics[width=\textwidth]{profile_unopt.png}
+    \caption{Unoptimized profile}
+    \label{fig:profile_unopt}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.8\textwidth}
+    \includegraphics[width=\textwidth]{profile_opt.png}
+    \caption{Optimized profile}
+    \label{fig:profile_opt}
+  \end{minipage}
+\end{figure}
 
 \section{Evaluation}
 % \textit{Students should describe the experimental setup used to evaluate their design. Students
@@ -283,7 +318,7 @@ testing strategy made us confident that our optimized designs were also correct.
 % it achieves the given results}
 
 \noindent We evaluated our designs across a series of 7 benchmarks, each of which have a number of nonzero entries ranging
-from several hundred to 4096, since 4096 is the largest number of nonzero entries our implementation can handle. 
+from several hundred to 4096, since 4096 is the largest number of nonzero entries our implementation can handle. \newline
 
 \begin{figure}[h!]
   \centering
@@ -366,7 +401,18 @@ nonzero entries, the 16 PE design would probably achieve speedups greater than t
 benchmarks achieving the best load balancing. Both of these benchmarks have nonzero entries closest to our limit, 4096. This
 means that each PE is doing an almost equal amount of work, whereas in other benchmarks some PEs are likely doing more work
 than others. As a result, the load balanced benchmarks achieve a greater speedup because they take advantage of more parallelism
-than the ones that are not load balanced.
+than the ones that are not load balanced. \newline
+
+\noindent As a rough estimate, we can approximate the theoretical speedup for a single SpMV with 8 PEs using the equation: 
+\[
+  S_8 = \frac{\mathit{NNZ}}{N + \frac{\mathit{NNZ}}{8}}
+\]
+The $N$ term in the denominator represents how long it takes to broadcast the
+input vectors. Plugging in the values of $N$ and $\mathit{NNZ}$ for the
+young\_4c benchmark, we get a maximum theoretical speedup of 2.66. We expect
+that the real speedup is less than that because of constant factors that we
+don't account for in this loose approximation, but this gives us a good way to
+check how successful our optimizations are.
 
 \section{Project Management}
 
