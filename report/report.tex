@@ -187,16 +187,19 @@ on 1, 9, 17, and so on. These sets of COO values are split into 8 HBM channels, 
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.5\textwidth]{spmv_diagram.png}
-  \caption{Parallelized SpMV}
-  \label{fig:spmv_diagram}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.5\textwidth]{pe_diagram.png}
-  \caption{SpMV Processing Element}
-  \label{fig:pe_diagram}
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{spmv_diagram.png}
+    \caption{Parallelized SpMV}
+    \label{fig:spmv_diagram}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{pe_diagram.png}
+    \caption{SpMV Processing Element}
+    \label{fig:pe_diagram}
+  \end{minipage}
 \end{figure}
 
 \noindent In order to apply the dataflow pragma to our SpMV kernel, each PE had to read and write to its own
@@ -383,8 +386,8 @@ from several hundred to 4096, since 4096 is the largest number of nonzero entrie
 \noindent Figure~\ref{fig:exec_times} displays the execution time of each of our designs, separating out the FPGA execution time from
 the host preprocessing time. Figure~\ref{fig:bench_info} contains the characteristics of each benchmark, where N is the number of
 rows and columns in the matrix and NNZ is the number of nonzero entries. Since these are sparse matrices, it is true for all the
-benchmarks that $\mathit{NNZ} << N^2$. Figure ~\ref{fig:speedups} shows the preprocessing times and the respective speedup that the 8 and 
-16 PE designs achieve over the baseline design. Figure ~\ref{fig:resources} shows the resource usage across our different designs.\newline
+benchmarks that $\mathit{NNZ} << N^2$. Figure~\ref{fig:speedups} shows the preprocessing times and the respective speedup that the 8 and 
+16 PE designs achieve over the baseline design. Figure~\ref{fig:resources} shows the resource usage across our different designs.\newline
 
 \noindent We observe several trends. First, we note that the 16 PE design never outperforms the 8 PE design. However, the 16 PE design
 uses many more resources than the 8 PE design, particularly LUTs. The disparity in resource usage can likely be attributed to
