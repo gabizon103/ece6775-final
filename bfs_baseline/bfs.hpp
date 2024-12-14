@@ -28,7 +28,8 @@ void bfs (
 extern "C" void bfs_xcel (
   int coo[BFS_SIZE],
   int last_frontier[VEC_SIZE],
-  int num_hops
+  int num_hops,
+  int nnz
 );
 
 void read_data(int coo[BFS_SIZE], std::string filename);

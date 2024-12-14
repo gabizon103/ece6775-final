@@ -158,6 +158,7 @@ int main(int argc, char** argv) {
     // do pre processing to split up rows by PE (cyclically)
     for (int i = 0; i < BFS_SIZE; i++) {
         short row = coo[i] >> 16;
+	if (row == 16384) continue;
         short pe = row % NUM_PE;
         // std::cout << "pe " << pe << " got row " << row << "\n";
         int idx = pe_counter[pe];

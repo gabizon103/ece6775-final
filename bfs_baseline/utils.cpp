@@ -17,18 +17,18 @@ void read_data(int coo[BFS_SIZE], std::string filename) {
 
       if (filename == "../data/young4c.dat") {
         if (!(infile >> row >> col >> value >> extra)) { // pad it to make it power of 2
-          row = 0;
-          col = 0;
+          row = 16384;
+          col = 16384;
         }
       } else if (filename == "../data/ash292.dat") {
           if (!(infile >> row >> col)) { // pad it to make it power of 2
-            row = 0;
-            col = 0;
+            row = 16384;
+            col = 16384;
           }
       } else {
         if (!(infile >> row >> col >> value)) { // pad it to make it power of 2
-          row = 0;
-          col = 0;
+          row = 16384;
+          col = 16384;
         }
       }
       

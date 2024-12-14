@@ -8,7 +8,8 @@
 void spmv (
   int coo[BFS_SIZE],
   int in_vec[VEC_SIZE],
-  int out_vec[VEC_SIZE]
+  int out_vec[VEC_SIZE],
+  int nnz
 ) {
   #pragma HLS inline off
   short row, col;
@@ -16,7 +17,7 @@ void spmv (
   for (int i = 0; i < VEC_SIZE; i++) {
     out_vec[i] = 0;
   }
-  for (int i = 0; i < BFS_SIZE; i++) {
+  for (int i = 0; i < nnz; i++) {
     row_col = coo[i];
     row = (row_col >> 16) & 0x0000FFFF;
     col = row_col & 0x0000FFFF;
@@ -28,7 +29,8 @@ void spmv (
 extern "C" void bfs_xcel (
   int coo[BFS_SIZE],
   int last_frontier[VEC_SIZE],
-  int num_hops
+  int num_hops,
+  int nnz
 ) {
   // set all the elements in visited to 1 
   // since we will use as mask to eliminate elements already visited
@@ -60,7 +62,7 @@ extern "C" void bfs_xcel (
   // do many iterations
   for (int i = 0; i < num_hops; i++){
 
-    spmv(coo, frontier, new_frontier);
+    spmv(coo, frontier, new_frontier, nnz);
 
     // mark visited nodes
     for (int j = 0; j < VEC_SIZE; j++){

@@ -128,8 +128,11 @@ int main(int argc, char** argv) {
     // std::cout << "reading data";
     read_data(coo_copy, data_file);
 
+    int nnz = 0;
     for (int i = 0; i < BFS_SIZE; i++) {
-        coo[i] = coo_copy[i];
+	if ((coo_copy[i] >> 16) == 16384) continue;
+        coo[nnz] = coo_copy[i];
+	nnz++
     }
     // std::cout << "got data";
 
@@ -223,6 +226,12 @@ int main(int argc, char** argv) {
     }
 
     err = kernel.setArg(2, num_hops);
+    if (err != CL_SUCCESS) {
+        std::cerr << "[ERROR]: Failed to set kernel argument 10, exit!" << std::endl;
+        std::cerr << "         Error code: " << err << std::endl;
+        return 1;
+    }
+    err = kernel.setArg(3, nnz);
     if (err != CL_SUCCESS) {
         std::cerr << "[ERROR]: Failed to set kernel argument 10, exit!" << std::endl;
         std::cerr << "         Error code: " << err << std::endl;
