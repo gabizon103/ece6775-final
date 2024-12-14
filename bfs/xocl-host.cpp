@@ -37,11 +37,10 @@ const std::string DEVICE_XSA = "xilinx_u280_gen3x16_xdma_base_1"; // only used w
 int main(int argc, char** argv) {
     // usage: host <xclbin_path> <vector size>
     if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <xclbin_path>" <<  " <data_path> " << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <xclbin_path>" << std::endl;
         return 1;
     }
     const std::string xclbin = argv[1];
-    const std::string data_file = argv[2];
 
     // first see if we are in hw
     const char* emulation_mode = getenv("XCL_EMULATION_MODE");
@@ -133,7 +132,7 @@ int main(int argc, char** argv) {
     const char* data_olm1000 = "../data/olm1000.dat";
     const char* data_young4c = "../data/young4c.dat";  
 
-    read_data(coo, data_file);
+    read_data(coo, data_young4c);
     bfs(coo, final_frontier_exp, num_hops);
 
     Timer timer_fpga("bfs_xcel on FPGA");
